@@ -9,13 +9,13 @@ type PageShellProps = {
 
 export function PageShell({ children, className }: PageShellProps) {
   return (
-    <main
+    <div
       className={cn(
         "relative min-h-screen overflow-x-clip bg-background text-foreground",
         className,
       )}
     >
       {children}
-    </main>
+    </div>
   );
 }
