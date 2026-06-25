@@ -8,11 +8,10 @@ import {
 } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { ConnectedNotesScene } from "@/components/sections/connected-notes/connected-notes-scene";
 import { ConnectedNoteLink } from "@/components/sections/connected-notes/connected-note-link";
 import { ConnectedNoteNode } from "@/components/sections/connected-notes/connected-note-node";
-import {
-  ConnectedNotesVisualShell,
-} from "@/components/sections/connected-notes/connected-notes-visual";
+import { ConnectedNotesVisualShell } from "@/components/sections/connected-notes/connected-notes-visual";
 import { ConnectedNotesFeatures } from "@/components/sections/connected-notes/connected-notes-features";
 import { ConnectedNotesHeader } from "@/components/sections/connected-notes/connected-notes-header";
 import {
@@ -26,7 +25,7 @@ import {
 import { cn } from "@/lib/cn";
 import { gentleEase, standardEase } from "@/lib/motion";
 
-type HoveredNodeId = string | null;
+type ActiveNodeId = string | null;
 
 const connectedNotesTiming = {
   labelDelay: 0,
@@ -34,20 +33,21 @@ const connectedNotesTiming = {
   headingStagger: 0.1,
   paragraphDelay: 0.42,
   graphDelay: 0.62,
-  primaryEdgeDelay: 1.12,
-  primaryEdgeStagger: 0.07,
-  secondaryEdgeDelay: 1.34,
-  secondaryEdgeStagger: 0.045,
-  nodeDelay: 1.46,
-  nodeStagger: 0.065,
-  featureDelay: 2.18,
+  nodeDelay: 1.08,
+  nodeStagger: 0.06,
+  featureDelay: 1.86,
   featureStagger: 0.12,
 } as const;
 
-const sectionReveal = {
+const entranceReveal = {
   amount: 0.22,
   margin: "0px 0px -14% 0px",
   once: true,
+} as const;
+
+const activityReveal = {
+  amount: 0.08,
+  margin: "25% 0px 25% 0px",
 } as const;
 
 const graphReveal: Variants = {
@@ -80,15 +80,18 @@ const nodesById = Object.fromEntries(
   connectedNoteNodes.map((node) => [node.id, node]),
 ) as Readonly<Record<string, ConnectedNoteNodeType>>;
 
-const visibleNodes: readonly ConnectedNoteNodeType[] = [...connectedNoteNodes].sort(
+const visibleNodes = [...connectedNoteNodes].sort(
   (left, right) => left.revealOrder - right.revealOrder,
 );
-const primaryEdges: readonly ConnectedNoteEdge[] = connectedNoteEdges.filter(
-  (edge) => edge.strength === "primary",
-);
-const secondaryEdges: readonly ConnectedNoteEdge[] = connectedNoteEdges.filter(
-  (edge) => edge.strength !== "primary",
-);
+
+const ambientNodeIds = [
+  "portfolio-system",
+  "architecture",
+  "roadmap",
+  "user-research",
+  "api-design",
+  "security-model",
+] as const;
 
 function buildConnections(
   nodes: readonly ConnectedNoteNodeType[],
@@ -117,121 +120,143 @@ const connectionLookup = buildConnections(connectedNoteNodes, connectedNoteEdges
 
 function getEdgeOpacity(
   edge: ConnectedNoteEdge,
-  hoveredNodeId: HoveredNodeId,
+  activeNodeId: ActiveNodeId,
   shouldReduceMotion: boolean,
 ) {
-  const baseOpacity = edge.strength === "primary" ? 0.9 : 0.62;
+  const baseOpacity = edge.strength === "primary" ? 0.28 : 0.12;
 
-  if (shouldReduceMotion || !hoveredNodeId) {
+  if (shouldReduceMotion || !activeNodeId) {
     return baseOpacity;
   }
 
   const edgeId = `${edge.from}-${edge.to}`;
-  const isConnected = connectionLookup.connectedEdgeIds
-    .get(hoveredNodeId)
-    ?.has(edgeId);
+  const isConnected = connectionLookup.connectedEdgeIds.get(activeNodeId)?.has(edgeId);
 
-  return isConnected ? Math.min(baseOpacity + 0.22, 1) : Math.max(baseOpacity - 0.24, 0.2);
+  return isConnected
+    ? edge.strength === "primary"
+      ? 0.74
+      : 0.42
+    : baseOpacity * 0.72;
 }
 
 function getNodeClasses(
   node: ConnectedNoteNodeType,
-  hoveredNodeId: HoveredNodeId,
+  activeNodeId: ActiveNodeId,
   shouldReduceMotion: boolean,
 ) {
-  if (shouldReduceMotion || !hoveredNodeId) {
+  if (shouldReduceMotion || !activeNodeId) {
     return {
-      wrapperClassName: "",
       innerClassName: "",
-      innerStyle: undefined,
+      wrapperClassName: "",
     };
   }
 
-  const connectedNodes = connectionLookup.connectedNodeIds.get(hoveredNodeId);
-  const isHovered = hoveredNodeId === node.id;
+  const connectedNodes = connectionLookup.connectedNodeIds.get(activeNodeId);
+  const isFocused = node.id === activeNodeId;
   const isConnected = connectedNodes?.has(node.id);
 
   return {
-    wrapperClassName: "",
     innerClassName: cn(
-      "will-change-transform",
-      isHovered && "border-primary/30 bg-white/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_20px_40px_-32px_rgba(109,61,245,0.28)]",
-      !isHovered && isConnected && "border-primary/22 bg-white/92",
-      !isHovered && !isConnected && "opacity-65",
+      isFocused &&
+        "border-primary/32 bg-[radial-gradient(circle_at_top,rgba(109,61,245,0.18),transparent_58%),linear-gradient(180deg,rgba(21,31,56,0.94),rgba(13,19,36,0.98))] shadow-[0_20px_40px_-28px_rgba(56,93,255,0.48),inset_0_1px_0_rgba(255,255,255,0.12)]",
+      !isFocused && isConnected && "border-primary/18 bg-[linear-gradient(180deg,rgba(18,26,44,0.88),rgba(11,16,29,0.9))]",
+      !isFocused && !isConnected && "opacity-68",
     ),
-    innerStyle: undefined,
+    wrapperClassName: "",
   };
 }
 
 export function ConnectedNotesMotion() {
-  const shouldReduceMotion = useReducedMotion();
-  const prefersReducedMotion = Boolean(shouldReduceMotion);
+  const reducedMotionPreference = useReducedMotion();
+  const prefersReducedMotion = Boolean(reducedMotionPreference);
   const sectionRef = useRef<HTMLDivElement | null>(null);
-  const isInView = useInView(sectionRef, sectionReveal);
-  const [hoveredNodeId, setHoveredNodeId] = useState<HoveredNodeId>(null);
+  const hasEntered = useInView(sectionRef, entranceReveal);
+  const isSceneActive = useInView(sectionRef, activityReveal);
+  const [hoveredNodeId, setHoveredNodeId] = useState<ActiveNodeId>(null);
   const [allowInteractiveGraph, setAllowInteractiveGraph] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [focusIndex, setFocusIndex] = useState(0);
 
   useEffect(() => {
     if (typeof window === "undefined") {
       return;
     }
 
-    const mediaQuery = window.matchMedia("(min-width: 48rem) and (hover: hover)");
-    const updateInteractionMode = () => {
-      setAllowInteractiveGraph(mediaQuery.matches);
+    const mobileQuery = window.matchMedia("(max-width: 47.99rem)");
+    const hoverQuery = window.matchMedia("(min-width: 48rem) and (hover: hover) and (pointer: fine)");
+
+    const updateQueries = () => {
+      setIsMobile(mobileQuery.matches);
+      setAllowInteractiveGraph(hoverQuery.matches);
     };
 
-    updateInteractionMode();
-    mediaQuery.addEventListener("change", updateInteractionMode);
+    updateQueries();
+    mobileQuery.addEventListener("change", updateQueries);
+    hoverQuery.addEventListener("change", updateQueries);
 
     return () => {
-      mediaQuery.removeEventListener("change", updateInteractionMode);
+      mobileQuery.removeEventListener("change", updateQueries);
+      hoverQuery.removeEventListener("change", updateQueries);
     };
   }, []);
 
+  const focusableNodeIds = useMemo(
+    () =>
+      ambientNodeIds.filter((nodeId) => {
+        const node = nodesById[nodeId];
+        return !isMobile || !("mobileHidden" in node && node.mobileHidden);
+      }),
+    [isMobile],
+  );
+
+  useEffect(() => {
+    if (prefersReducedMotion || !isSceneActive || focusableNodeIds.length === 0) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      setFocusIndex((current) => (current + 1) % focusableNodeIds.length);
+    }, isMobile ? 2300 : 2800);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [focusableNodeIds.length, isMobile, isSceneActive, prefersReducedMotion]);
+
+  const ambientNodeId =
+    focusableNodeIds.length > 0
+      ? focusableNodeIds[focusIndex % focusableNodeIds.length]
+      : null;
+  const activeNodeId = hoveredNodeId ?? ambientNodeId;
   const canHover = !prefersReducedMotion && allowInteractiveGraph;
 
   const renderedNodes = useMemo(
     () =>
       visibleNodes.map((node, index) => {
-        const hoverState = getNodeClasses(node, hoveredNodeId, prefersReducedMotion);
-        const nodeDistance =
-          node.size === "primary"
-            ? 0
-            : node.size === "secondary"
-              ? 12
-              : 9;
-        const ambientTransition =
-          allowInteractiveGraph && node.mobileHidden !== true
-            ? {
-                duration: 6.5 + index * 0.45,
-                repeat: Number.POSITIVE_INFINITY,
-                repeatType: "mirror" as const,
-                ease: "easeInOut" as const,
-                delay: 0.2 + index * 0.08,
-              }
-            : undefined;
+        const hoverState = getNodeClasses(node, activeNodeId, prefersReducedMotion);
+        const isMobileHidden = "mobileHidden" in node && node.mobileHidden;
+        const nodeDistance = node.size === "primary" ? 0 : node.size === "secondary" ? 10 : 8;
+        const ambientDuration = 7.2 + index * 0.42;
+        const ambientShiftX =
+          node.size === "primary" ? 0 : index % 2 === 0 ? 2.4 : -2.2;
+        const ambientShiftY =
+          node.size === "primary" ? -1.4 : index % 3 === 0 ? -2.4 : 1.8;
 
         return prefersReducedMotion ? (
-          <ConnectedNoteNode
-            key={node.id}
-            node={node}
-            innerClassName={hoverState.innerClassName}
-          />
+          <ConnectedNoteNode key={node.id} node={node} innerClassName={hoverState.innerClassName} />
         ) : (
           <motion.div
             key={node.id}
-            className={cn("absolute inset-0", node.mobileHidden === true && "hidden sm:block")}
+            className={cn("absolute inset-0", isMobileHidden && "hidden sm:block")}
             initial={{ opacity: 0, scale: node.size === "primary" ? 0.94 : 0.9, y: nodeDistance }}
             animate={
-              isInView
+              hasEntered
                 ? { opacity: 1, scale: 1, y: 0 }
                 : { opacity: 0, scale: node.size === "primary" ? 0.94 : 0.9, y: nodeDistance }
             }
             transition={{
               delay: connectedNotesTiming.nodeDelay + node.revealOrder * connectedNotesTiming.nodeStagger,
-              duration:
-                node.size === "primary" ? 0.64 : node.size === "secondary" ? 0.54 : 0.44,
+              duration: node.size === "primary" ? 0.66 : node.size === "secondary" ? 0.54 : 0.44,
               ease: standardEase,
             }}
             onHoverStart={canHover ? () => setHoveredNodeId(node.id) : undefined}
@@ -239,35 +264,42 @@ export function ConnectedNotesMotion() {
           >
             <motion.div
               animate={
-                ambientTransition
+                isSceneActive && !isMobileHidden
                   ? {
-                      x: [0, index % 2 === 0 ? 2 : -2, 0],
-                      y: [0, index % 3 === 0 ? -2 : 2, 0],
+                      x: [0, ambientShiftX, 0],
+                      y: [0, ambientShiftY, 0],
                     }
                   : undefined
               }
-              transition={ambientTransition}
+              transition={
+                isSceneActive && !isMobileHidden
+                  ? {
+                      duration: ambientDuration,
+                      repeat: Number.POSITIVE_INFINITY,
+                      repeatType: "mirror",
+                      ease: "easeInOut",
+                      delay: index * 0.12,
+                    }
+                  : undefined
+              }
             >
-              <ConnectedNoteNode
-                node={node}
-                innerClassName={hoverState.innerClassName}
-              />
+              <ConnectedNoteNode node={node} innerClassName={hoverState.innerClassName} />
             </motion.div>
           </motion.div>
         );
       }),
-    [allowInteractiveGraph, canHover, hoveredNodeId, isInView, prefersReducedMotion],
+    [activeNodeId, canHover, hasEntered, isSceneActive, prefersReducedMotion],
   );
 
-  const renderedPrimaryEdges = useMemo(
+  const renderedEdges = useMemo(
     () =>
-      primaryEdges.map((edge, index) =>
+      connectedNoteEdges.map((edge, index) =>
         prefersReducedMotion ? (
           <ConnectedNoteLink
             key={`${edge.from}-${edge.to}`}
             edge={edge}
             nodesById={nodesById}
-            opacity={getEdgeOpacity(edge, hoveredNodeId, prefersReducedMotion)}
+            opacity={getEdgeOpacity(edge, activeNodeId, prefersReducedMotion)}
           />
         ) : (
           <motion.path
@@ -280,79 +312,31 @@ export function ConnectedNotesMotion() {
               return `M ${fromNode.x} ${fromNode.y} Q ${controlX} ${controlY} ${toNode.x} ${toNode.y}`;
             })()}
             fill="none"
-            stroke="var(--network-line)"
+            stroke={edge.strength === "primary" ? "rgba(129,196,255,1)" : "rgba(173,157,255,1)"}
             strokeLinecap="round"
-            strokeWidth={1.75}
+            strokeWidth={edge.strength === "primary" ? 1.55 : 1.05}
             vectorEffect="non-scaling-stroke"
-            className={edge.mobileHidden === true ? "hidden sm:block" : undefined}
+            className={("mobileHidden" in edge && edge.mobileHidden) ? "hidden sm:block" : undefined}
             initial={{ pathLength: 0, opacity: 0 }}
             animate={{
-              pathLength: isInView ? 1 : 0,
-              opacity: isInView ? getEdgeOpacity(edge, hoveredNodeId, false) : 0,
+              pathLength: hasEntered ? 1 : 0,
+              opacity: hasEntered ? getEdgeOpacity(edge, activeNodeId, false) : 0,
             }}
             transition={{
               pathLength: {
-                delay: connectedNotesTiming.primaryEdgeDelay + index * connectedNotesTiming.primaryEdgeStagger,
-                duration: 0.8,
+                delay: connectedNotesTiming.graphDelay + 0.24 + index * 0.045,
+                duration: edge.strength === "primary" ? 0.82 : 0.62,
                 ease: standardEase,
               },
               opacity: {
-                duration: 0.22,
+                duration: 0.46,
                 ease: gentleEase,
               },
             }}
           />
         ),
       ),
-    [hoveredNodeId, isInView, prefersReducedMotion],
-  );
-
-  const renderedSecondaryEdges = useMemo(
-    () =>
-      secondaryEdges.map((edge, index) =>
-        prefersReducedMotion ? (
-          <ConnectedNoteLink
-            key={`${edge.from}-${edge.to}`}
-            edge={edge}
-            nodesById={nodesById}
-            opacity={getEdgeOpacity(edge, hoveredNodeId, prefersReducedMotion)}
-          />
-        ) : (
-          <motion.path
-            key={`${edge.from}-${edge.to}`}
-            d={(() => {
-              const fromNode = nodesById[edge.from];
-              const toNode = nodesById[edge.to];
-              const controlX = (fromNode.x + toNode.x) / 2;
-              const controlY = (fromNode.y + toNode.y) / 2 - (edge.curve ?? 0);
-              return `M ${fromNode.x} ${fromNode.y} Q ${controlX} ${controlY} ${toNode.x} ${toNode.y}`;
-            })()}
-            fill="none"
-            stroke="var(--network-line)"
-            strokeLinecap="round"
-            strokeWidth={1.1}
-            vectorEffect="non-scaling-stroke"
-            className={edge.mobileHidden === true ? "hidden sm:block" : undefined}
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{
-              pathLength: isInView ? 1 : 0,
-              opacity: isInView ? getEdgeOpacity(edge, hoveredNodeId, false) : 0,
-            }}
-            transition={{
-              pathLength: {
-                delay: connectedNotesTiming.secondaryEdgeDelay + index * connectedNotesTiming.secondaryEdgeStagger,
-                duration: 0.6,
-                ease: standardEase,
-              },
-              opacity: {
-                duration: 0.22,
-                ease: gentleEase,
-              },
-            }}
-          />
-        ),
-      ),
-    [hoveredNodeId, isInView, prefersReducedMotion],
+    [activeNodeId, hasEntered, prefersReducedMotion],
   );
 
   return (
@@ -367,7 +351,7 @@ export function ConnectedNotesMotion() {
           ) : (
             <motion.div
               initial={{ opacity: 0, y: 12 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+              animate={hasEntered ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
               transition={{
                 delay: connectedNotesTiming.labelDelay,
                 duration: 0.54,
@@ -396,7 +380,7 @@ export function ConnectedNotesMotion() {
                   <motion.span
                     className="block"
                     initial={{ opacity: 0.2, y: "108%" }}
-                    animate={isInView ? { opacity: 1, y: "0%" } : { opacity: 0.2, y: "108%" }}
+                    animate={hasEntered ? { opacity: 1, y: "0%" } : { opacity: 0.2, y: "108%" }}
                     transition={{
                       delay: connectedNotesTiming.headingDelay + index * connectedNotesTiming.headingStagger,
                       duration: 0.9,
@@ -419,7 +403,7 @@ export function ConnectedNotesMotion() {
             <motion.p
               className="mt-6 max-w-[43rem] text-[1.05rem] leading-8 text-muted sm:text-[1.125rem]"
               initial={{ opacity: 0, y: 14 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+              animate={hasEntered ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
               transition={{
                 delay: connectedNotesTiming.paragraphDelay,
                 duration: 0.58,
@@ -433,25 +417,74 @@ export function ConnectedNotesMotion() {
       />
 
       {prefersReducedMotion ? (
-        <ConnectedNotesVisualShell />
+        <ConnectedNotesVisualShell
+          canvasSlot={<ConnectedNotesScene active={false} reducedMotion className="absolute inset-0" />}
+          svgSlot={
+            <svg
+              className="absolute inset-0 h-full w-full pointer-events-none"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+            >
+              {connectedNoteEdges.map((edge) => (
+                <ConnectedNoteLink
+                  key={`${edge.from}-${edge.to}`}
+                  edge={edge}
+                  nodesById={nodesById}
+                  opacity={getEdgeOpacity(edge, null, true)}
+                />
+              ))}
+            </svg>
+          }
+          foregroundSlot={
+            <div className="pointer-events-none absolute inset-x-5 bottom-5 rounded-[1.3rem] border border-white/10 bg-[linear-gradient(180deg,rgba(8,12,24,0.38),rgba(8,12,24,0.62))] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-[8px] sm:inset-x-7 sm:bottom-7 sm:px-5">
+              <p className="max-w-none text-[0.74rem] font-semibold uppercase tracking-[0.16em] text-primary-soft/84">
+                Connected context
+              </p>
+              <p className="mt-2 max-w-[26rem] text-[0.92rem] leading-6 text-white/74">
+                Keep projects, decisions, research, and implementation notes flowing into one connected workspace.
+              </p>
+            </div>
+          }
+        />
       ) : (
-        <motion.div
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          variants={graphReveal}
-        >
+        <motion.div initial="hidden" animate={hasEntered ? "visible" : "hidden"} variants={graphReveal}>
           <ConnectedNotesVisualShell
+            canvasSlot={<ConnectedNotesScene active={isSceneActive} className="absolute inset-0" />}
             svgSlot={
               <svg
                 className="absolute inset-0 h-full w-full pointer-events-none"
                 viewBox="0 0 100 100"
                 preserveAspectRatio="none"
               >
-                {renderedPrimaryEdges}
-                {renderedSecondaryEdges}
+                {renderedEdges}
               </svg>
             }
             nodeSlot={renderedNodes}
+            foregroundSlot={
+              <motion.div
+                initial={{ opacity: 0, y: 18 }}
+                animate={hasEntered ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+                transition={{
+                  delay: connectedNotesTiming.graphDelay + 0.48,
+                  duration: 0.72,
+                  ease: gentleEase,
+                }}
+                className="pointer-events-none absolute inset-x-5 bottom-5 rounded-[1.3rem] border border-white/10 bg-[linear-gradient(180deg,rgba(8,12,24,0.34),rgba(8,12,24,0.64))] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-[8px] sm:inset-x-7 sm:bottom-7 sm:px-5"
+              >
+                <div className="flex flex-wrap items-center gap-3">
+                  <p className="max-w-none text-[0.74rem] font-semibold uppercase tracking-[0.16em] text-primary-soft/84">
+                    {activeNodeId ? `${nodesById[activeNodeId].title} active` : "Connected context"}
+                  </p>
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary-soft/74" />
+                  <p className="max-w-none text-[0.74rem] uppercase tracking-[0.14em] text-white/46">
+                    persistent knowledge flow
+                  </p>
+                </div>
+                <p className="mt-2 max-w-[28rem] text-[0.92rem] leading-6 text-white/74">
+                  Keep projects, decisions, research, and implementation notes flowing into one connected workspace.
+                </p>
+              </motion.div>
+            }
           />
         </motion.div>
       )}
@@ -464,7 +497,7 @@ export function ConnectedNotesMotion() {
             <motion.div
               key={title}
               initial="hidden"
-              animate={isInView ? "visible" : "hidden"}
+              animate={hasEntered ? "visible" : "hidden"}
               variants={featureVariants}
               transition={{
                 delay: connectedNotesTiming.featureDelay + index * connectedNotesTiming.featureStagger,

@@ -37,11 +37,11 @@ export function ConnectedNoteNode({
     >
       <div
         className={cn(
-          "rounded-[1.4rem] border border-network-border bg-network-node px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] backdrop-blur-[1px] transition duration-200 ease-[var(--ease-standard)]",
+          "rounded-[1.4rem] border border-white/10 bg-[linear-gradient(180deg,rgba(17,24,39,0.82),rgba(11,16,29,0.84))] px-4 py-3 shadow-[0_16px_34px_-28px_rgba(3,6,14,0.92),inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-[10px] transition duration-200 ease-[var(--ease-standard)]",
           node.size === "primary" &&
-            "min-w-[13rem] rounded-[1.7rem] border-primary/18 bg-network-node-primary px-5 py-4",
+            "min-w-[13rem] rounded-[1.7rem] border-primary/28 bg-[radial-gradient(circle_at_top,rgba(109,61,245,0.16),transparent_58%),linear-gradient(180deg,rgba(20,29,50,0.92),rgba(13,19,36,0.96))] px-5 py-4",
           node.size === "secondary" && "min-w-[10rem]",
-          node.size === "tertiary" && "min-w-[8.5rem] px-3.5 py-2.5 opacity-88",
+          node.size === "tertiary" && "min-w-[8.5rem] px-3.5 py-2.5 opacity-92",
           innerClassName,
         )}
         style={style}
@@ -49,8 +49,8 @@ export function ConnectedNoteNode({
         <div className="flex items-start gap-3">
           <div
             className={cn(
-              "mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-[0.95rem] border border-primary/12 bg-primary/[0.045] text-primary",
-              node.size === "primary" && "h-9 w-9 bg-primary/12 text-primary-bright",
+              "mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-[0.95rem] border border-white/10 bg-white/[0.05] text-primary-soft",
+              node.size === "primary" && "h-9 w-9 border-primary/18 bg-primary/[0.18] text-primary-bright",
               node.size === "tertiary" && "h-7 w-7 rounded-[0.85rem]",
             )}
           >
@@ -72,8 +72,8 @@ export function ConnectedNoteNode({
             {node.category ? (
               <p
                 className={cn(
-                  "max-w-none text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-network-muted",
-                  node.size === "primary" && "text-[0.72rem] text-primary/80",
+                "max-w-none text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-network-muted",
+                  node.size === "primary" && "text-[0.72rem] text-primary-soft/82",
                 )}
               >
                 {node.category}
@@ -81,9 +81,9 @@ export function ConnectedNoteNode({
             ) : null}
             <p
               className={cn(
-                "mt-1 max-w-none text-[0.92rem] font-medium leading-5 tracking-[-0.03em] text-foreground",
-                node.size === "primary" && "text-[1.08rem] leading-6",
-                node.size === "tertiary" && "text-[0.84rem] leading-5 text-foreground/86",
+                "mt-1 max-w-none text-[0.92rem] font-medium leading-5 tracking-[-0.03em] text-white/92",
+                node.size === "primary" && "text-[1.08rem] leading-6 text-white",
+                node.size === "tertiary" && "text-[0.84rem] leading-5 text-white/82",
               )}
             >
               {node.title}
