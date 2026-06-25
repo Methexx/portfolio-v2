@@ -53,6 +53,13 @@
   --security-accent: #9e82ff;
   --security-ciphertext: rgba(105, 90, 132, 0.72);
   --security-status: rgba(194, 178, 255, 0.82);
+  --meetings-surface: #f3efeb;
+  --meetings-panel: rgba(255, 255, 255, 0.84);
+  --meetings-panel-muted: rgba(245, 240, 248, 0.82);
+  --meetings-border: rgba(109, 61, 245, 0.12);
+  --meetings-accent: #8b66ff;
+  --meetings-selected: rgba(238, 230, 255, 0.86);
+  --meetings-timeline: rgba(109, 61, 245, 0.18);
   --container-width: 88rem;
   --content-narrow: 46rem;
   --section-spacing-compact: clamp(4rem, 8vw, 6rem);
@@ -117,6 +124,13 @@
   --color-security-accent: var(--security-accent);
   --color-security-ciphertext: var(--security-ciphertext);
   --color-security-status: var(--security-status);
+  --color-meetings-surface: var(--meetings-surface);
+  --color-meetings-panel: var(--meetings-panel);
+  --color-meetings-panel-muted: var(--meetings-panel-muted);
+  --color-meetings-border: var(--meetings-border);
+  --color-meetings-accent: var(--meetings-accent);
+  --color-meetings-selected: var(--meetings-selected);
+  --color-meetings-timeline: var(--meetings-timeline);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --radius-sm: var(--radius-sm);
