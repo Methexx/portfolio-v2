@@ -46,6 +46,13 @@
   --research-border: rgba(109, 61, 245, 0.12);
   --research-highlight: rgba(157, 125, 255, 0.14);
   --research-accent: #8f6cff;
+  --security-surface: #160f1f;
+  --security-panel: rgba(35, 25, 48, 0.9);
+  --security-panel-muted: rgba(63, 49, 85, 0.5);
+  --security-border: rgba(221, 210, 255, 0.12);
+  --security-accent: #9e82ff;
+  --security-ciphertext: rgba(105, 90, 132, 0.72);
+  --security-status: rgba(194, 178, 255, 0.82);
   --container-width: 88rem;
   --content-narrow: 46rem;
   --section-spacing-compact: clamp(4rem, 8vw, 6rem);
@@ -103,6 +110,13 @@
   --color-research-border: var(--research-border);
   --color-research-highlight: var(--research-highlight);
   --color-research-accent: var(--research-accent);
+  --color-security-surface: var(--security-surface);
+  --color-security-panel: var(--security-panel);
+  --color-security-panel-muted: var(--security-panel-muted);
+  --color-security-border: var(--security-border);
+  --color-security-accent: var(--security-accent);
+  --color-security-ciphertext: var(--security-ciphertext);
+  --color-security-status: var(--security-status);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --radius-sm: var(--radius-sm);

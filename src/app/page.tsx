@@ -5,6 +5,7 @@ import { ConnectedNotesSection } from "@/components/sections/connected-notes/con
 import { FeatureGridSection } from "@/components/sections/features/feature-grid-section";
 import { HeroSection } from "@/components/sections/hero/hero-section";
 import { ResearchReadingSection } from "@/components/sections/research-reading/research-reading-section";
+import { SecuritySection } from "@/components/sections/security/security-section";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
         <AiShowcaseSection />
         <ConnectedNotesSection />
         <ResearchReadingSection />
+        <SecuritySection />
       </main>
     </PageShell>
   );
