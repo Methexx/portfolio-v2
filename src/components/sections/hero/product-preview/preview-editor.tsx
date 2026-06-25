@@ -1,5 +1,11 @@
 import type { ReactNode } from "react";
 
+import {
+  PreviewDocumentGroup,
+  PreviewDocumentGroups,
+  PreviewTitleEntrance,
+  PreviewTitleIndicator,
+} from "@/components/sections/hero/product-preview/product-preview-motion";
 import { previewDocumentSections } from "@/components/sections/hero/product-preview/preview-placeholder-data";
 
 function Highlight({ children }: { children: ReactNode }) {
@@ -42,9 +48,11 @@ function renderSentence(title: string, highlights: readonly string[] = []) {
 export function PreviewEditor() {
   return (
     <section className="flex h-full min-h-0 flex-col bg-preview-editor px-4 py-4 text-white/72 sm:px-5 sm:py-5 md:px-6 lg:px-7">
-      <div className="flex items-center gap-3">
-        <span className="h-8 w-0.5 rounded-full bg-primary" />
-        <div>
+      <PreviewTitleEntrance className="flex items-center gap-3">
+        <PreviewTitleIndicator className="flex">
+          <span className="h-8 w-0.5 rounded-full bg-primary" />
+        </PreviewTitleIndicator>
+        <div className="min-w-0">
           <div className="text-[0.6rem] uppercase tracking-[0.14em] text-white/26">
             Editor
           </div>
@@ -52,12 +60,12 @@ export function PreviewEditor() {
             Sun, April 2nd, 2023
           </h2>
         </div>
-      </div>
+      </PreviewTitleEntrance>
 
       <div className="mt-6 min-h-0 flex-1">
-        <ul className="space-y-4 text-[0.72rem] leading-[1.72] sm:text-[0.76rem] md:text-[0.8rem]">
+        <PreviewDocumentGroups className="space-y-4 text-[0.72rem] leading-[1.72] sm:text-[0.76rem] md:text-[0.8rem]">
           {previewDocumentSections.map((section) => (
-            <li key={section.title}>
+            <PreviewDocumentGroup key={section.title}>
               <div className="flex gap-2.5">
                 <span className="mt-[0.48rem] h-1.5 w-1.5 rounded-full bg-white/62" />
                 <div className="min-w-0">
@@ -76,9 +84,9 @@ export function PreviewEditor() {
                   ) : null}
                 </div>
               </div>
-            </li>
+            </PreviewDocumentGroup>
           ))}
-        </ul>
+        </PreviewDocumentGroups>
       </div>
     </section>
   );

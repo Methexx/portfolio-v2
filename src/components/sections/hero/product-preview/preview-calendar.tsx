@@ -1,3 +1,4 @@
+import { PreviewSelectedDayAccent } from "@/components/sections/hero/product-preview/product-preview-motion";
 import { cn } from "@/lib/cn";
 import {
   previewCalendarDays,
@@ -14,8 +15,9 @@ export function PreviewCalendar() {
       </div>
       <div className="mt-2.5 grid grid-cols-7 gap-1.5 text-center text-[0.68rem] text-white/66">
         {previewCalendarDays.map((day, index) => (
-          <span
+          <PreviewSelectedDayAccent
             key={`${day.day}-${index}`}
+            selected={day.selected}
             className={cn(
               "flex h-6 items-center justify-center rounded-md",
               day.muted && "text-white/22",
@@ -23,7 +25,7 @@ export function PreviewCalendar() {
             )}
           >
             {day.day}
-          </span>
+          </PreviewSelectedDayAccent>
         ))}
       </div>
     </div>
