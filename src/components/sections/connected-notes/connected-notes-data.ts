@@ -17,6 +17,7 @@ export type ConnectedNoteNode = Readonly<{
   size: "primary" | "secondary" | "tertiary";
   x: number;
   y: number;
+  revealOrder: number;
   mobileHidden?: boolean;
 }>;
 
@@ -53,6 +54,7 @@ export const connectedNoteNodes = [
     size: "primary",
     x: 49,
     y: 49,
+    revealOrder: 0,
   },
   {
     id: "roadmap",
@@ -61,6 +63,7 @@ export const connectedNoteNodes = [
     size: "secondary",
     x: 18,
     y: 23,
+    revealOrder: 2,
   },
   {
     id: "architecture",
@@ -69,6 +72,7 @@ export const connectedNoteNodes = [
     size: "secondary",
     x: 34,
     y: 17,
+    revealOrder: 1,
   },
   {
     id: "user-research",
@@ -77,6 +81,7 @@ export const connectedNoteNodes = [
     size: "secondary",
     x: 77,
     y: 24,
+    revealOrder: 3,
   },
   {
     id: "mobile-app",
@@ -85,6 +90,7 @@ export const connectedNoteNodes = [
     size: "secondary",
     x: 21,
     y: 69,
+    revealOrder: 4,
   },
   {
     id: "api-design",
@@ -93,6 +99,7 @@ export const connectedNoteNodes = [
     size: "secondary",
     x: 74,
     y: 60,
+    revealOrder: 5,
   },
   {
     id: "security-model",
@@ -101,6 +108,7 @@ export const connectedNoteNodes = [
     size: "secondary",
     x: 62,
     y: 77,
+    revealOrder: 6,
   },
   {
     id: "ai-workflow",
@@ -109,6 +117,7 @@ export const connectedNoteNodes = [
     size: "tertiary",
     x: 61,
     y: 34,
+    revealOrder: 7,
     mobileHidden: true,
   },
   {
@@ -118,6 +127,7 @@ export const connectedNoteNodes = [
     size: "tertiary",
     x: 39,
     y: 79,
+    revealOrder: 8,
     mobileHidden: true,
   },
   {
@@ -127,6 +137,7 @@ export const connectedNoteNodes = [
     size: "tertiary",
     x: 86,
     y: 46,
+    revealOrder: 9,
     mobileHidden: true,
   },
 ] as const satisfies readonly ConnectedNoteNode[];

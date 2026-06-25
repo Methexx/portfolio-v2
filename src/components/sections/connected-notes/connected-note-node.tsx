@@ -8,12 +8,20 @@ import { cn } from "@/lib/cn";
 
 type ConnectedNoteNodeProps = {
   node: ConnectedNoteNodeType;
+  className?: string;
+  innerClassName?: string;
+  style?: CSSProperties;
 };
 
-export function ConnectedNoteNode({ node }: ConnectedNoteNodeProps) {
+export function ConnectedNoteNode({
+  node,
+  className,
+  innerClassName,
+  style,
+}: ConnectedNoteNodeProps) {
   const Icon = connectedNodeIcons[node.id];
 
-  const style = {
+  const positionStyle = {
     left: `${node.x}%`,
     top: `${node.y}%`,
   } satisfies CSSProperties;
@@ -23,17 +31,20 @@ export function ConnectedNoteNode({ node }: ConnectedNoteNodeProps) {
       className={cn(
         "absolute -translate-x-1/2 -translate-y-1/2",
         node.mobileHidden && "hidden sm:block",
+        className,
       )}
-      style={style}
+      style={positionStyle}
     >
       <div
         className={cn(
-          "rounded-[1.4rem] border border-network-border bg-network-node px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] backdrop-blur-[1px]",
+          "rounded-[1.4rem] border border-network-border bg-network-node px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] backdrop-blur-[1px] transition duration-200 ease-[var(--ease-standard)]",
           node.size === "primary" &&
             "min-w-[13rem] rounded-[1.7rem] border-primary/18 bg-network-node-primary px-5 py-4",
           node.size === "secondary" && "min-w-[10rem]",
           node.size === "tertiary" && "min-w-[8.5rem] px-3.5 py-2.5 opacity-88",
+          innerClassName,
         )}
+        style={style}
       >
         <div className="flex items-start gap-3">
           <div
