@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 export type AiAction = Readonly<{
+  id: "rerun" | "insert" | "copy" | "replace";
   label: string;
   shortcut: string;
   icon: LucideIcon;
@@ -25,6 +26,7 @@ export type AiCapability = Readonly<{
 export const aiShowcaseCopy = {
   label: "AI systems",
   heading: "Build with an intelligent assistant.",
+  headingLines: ["Build with an", "intelligent assistant."],
   description:
     "Use carefully designed AI workflows to organize ideas, improve writing, and turn scattered information into useful output.",
   promptContextLabel: "Project notes",
@@ -40,19 +42,24 @@ export const aiShowcaseCopy = {
   responseLabel: "Assistant response",
   responseText:
     "AI can reduce repetitive work, surface useful context, and help teams move from raw information to clearer decisions. The strongest results come from combining reliable product design, structured data, and human review.",
+  responseChunks: [
+    "AI can reduce repetitive work, surface useful context, and help teams move from raw information to clearer decisions.",
+    "The strongest results come from combining reliable product design,",
+    "structured data, and human review.",
+  ],
   responseHighlight:
     "The strongest results come from combining reliable product design, structured data, and human review.",
   capabilitiesHeading: "What can intelligent systems help with?",
 } as const;
 
 export const aiActions = [
-  { label: "Re-run", shortcut: "R", icon: RefreshCw },
-  { label: "Insert", shortcut: "I", icon: CornerDownLeft },
-  { label: "Copy", shortcut: "C", icon: Copy },
+  { id: "rerun", label: "Re-run", shortcut: "R", icon: RefreshCw },
+  { id: "insert", label: "Insert", shortcut: "I", icon: CornerDownLeft },
+  { id: "copy", label: "Copy", shortcut: "C", icon: Copy },
 ] as const satisfies readonly AiAction[];
 
 export const aiSecondaryActions = [
-  { label: "Replace", shortcut: "Cmd Enter", icon: ClipboardCheck },
+  { id: "replace", label: "Replace", shortcut: "Cmd Enter", icon: ClipboardCheck },
 ] as const satisfies readonly AiAction[];
 
 export const aiCapabilities = [
