@@ -1,5 +1,6 @@
 import { PageShell } from "@/components/layout/page-shell";
 import { SiteHeader } from "@/components/layout/site-header";
+import { AiShowcaseSection } from "@/components/sections/ai-showcase/ai-showcase-section";
 import { FeatureGridSection } from "@/components/sections/features/feature-grid-section";
 import { HeroSection } from "@/components/sections/hero/hero-section";
 
@@ -10,6 +11,7 @@ export default function Home() {
       <main>
         <HeroSection />
         <FeatureGridSection />
+        <AiShowcaseSection />
       </main>
     </PageShell>
   );

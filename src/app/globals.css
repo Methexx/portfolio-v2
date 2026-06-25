@@ -29,6 +29,11 @@
   --preview-border: rgba(221, 210, 255, 0.08);
   --preview-muted: rgba(224, 217, 244, 0.52);
   --preview-accent: #8b5cf6;
+  --ai-panel: #20162d;
+  --ai-panel-surface: rgba(52, 37, 71, 0.72);
+  --ai-panel-muted: rgba(226, 219, 243, 0.66);
+  --ai-panel-border: rgba(221, 210, 255, 0.1);
+  --ai-panel-accent: #9d7dff;
   --container-width: 88rem;
   --content-narrow: 46rem;
   --section-spacing-compact: clamp(4rem, 8vw, 6rem);
@@ -69,6 +74,11 @@
   --color-preview-border: var(--preview-border);
   --color-preview-muted: var(--preview-muted);
   --color-preview-accent: var(--preview-accent);
+  --color-ai-panel: var(--ai-panel);
+  --color-ai-panel-surface: var(--ai-panel-surface);
+  --color-ai-panel-muted: var(--ai-panel-muted);
+  --color-ai-panel-border: var(--ai-panel-border);
+  --color-ai-panel-accent: var(--ai-panel-accent);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --radius-sm: var(--radius-sm);
