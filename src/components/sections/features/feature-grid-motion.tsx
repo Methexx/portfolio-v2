@@ -3,6 +3,7 @@
 import {
   motion,
   useReducedMotion,
+  type HTMLMotionProps,
   type Variants,
 } from "motion/react";
 import type { ReactNode } from "react";
@@ -53,7 +54,7 @@ const itemVariants: Variants = {
 type FeatureGridMotionProps = {
   children: ReactNode;
   className?: string;
-};
+} & Omit<HTMLMotionProps<"ul">, "children" | "className" | "role">;
 
 type FeatureGridMotionItemProps = {
   children: ReactNode;
@@ -63,6 +64,7 @@ type FeatureGridMotionItemProps = {
 export function FeatureGridMotion({
   children,
   className,
+  ...props
 }: FeatureGridMotionProps) {
   const shouldReduceMotion = useReducedMotion();
 
@@ -82,6 +84,7 @@ export function FeatureGridMotion({
       viewport={featureReveal}
       variants={sectionVariants}
       role="list"
+      {...props}
     >
       {children}
     </motion.ul>

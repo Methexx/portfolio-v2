@@ -1,6 +1,5 @@
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
-import { featureItems } from "@/components/sections/features/feature-data";
 import { FeatureGrid } from "@/components/sections/features/feature-grid";
 
 export function FeatureGridSection() {
@@ -15,7 +14,7 @@ export function FeatureGridSection() {
           <h2 id="capabilities-heading" className="sr-only">
             Capabilities
           </h2>
-          <FeatureGrid items={featureItems} />
+          <FeatureGrid />
         </div>
       </Container>
     </Section>

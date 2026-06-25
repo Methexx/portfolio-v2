@@ -3,6 +3,7 @@ import {
   PreviewInspectorEntrance,
   PreviewSidebarEntrance,
 } from "@/components/sections/hero/product-preview/product-preview-motion";
+import { ProductPreviewActivity } from "@/components/sections/hero/product-preview/product-preview-activity";
 import { PreviewEditor } from "@/components/sections/hero/product-preview/preview-editor";
 import { PreviewInspector } from "@/components/sections/hero/product-preview/preview-inspector";
 import { PreviewShell } from "@/components/sections/hero/product-preview/preview-shell";
@@ -11,6 +12,7 @@ import { PreviewSidebar } from "@/components/sections/hero/product-preview/previ
 export function ProductPreview() {
   return (
     <PreviewShell aria-hidden="true">
+      <ProductPreviewActivity active />
       <div className="absolute inset-x-0 top-0 flex h-10 items-center justify-between border-b border-preview-border bg-white/[0.03] px-4 sm:h-11 sm:px-5">
         <div className="flex items-center gap-2">
           <span className="h-2 w-2 rounded-full bg-white/22" />
