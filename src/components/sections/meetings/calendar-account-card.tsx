@@ -5,9 +5,14 @@ import type { CalendarAccount } from "@/components/sections/meetings/meetings-da
 type CalendarAccountCardProps = {
   account: CalendarAccount;
   className?: string;
+  statusClassName?: string;
 };
 
-export function CalendarAccountCard({ account, className }: CalendarAccountCardProps) {
+export function CalendarAccountCard({
+  account,
+  className,
+  statusClassName,
+}: CalendarAccountCardProps) {
   const AccountIcon = account.icon;
   const StatusIcon = account.statusIcon;
 
@@ -32,7 +37,12 @@ export function CalendarAccountCard({ account, className }: CalendarAccountCardP
                 {account.label}
               </p>
             </div>
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/10 bg-white/70 px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-primary">
+            <div
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-full border border-primary/10 bg-white/70 px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-primary",
+                statusClassName,
+              )}
+            >
               <StatusIcon aria-hidden="true" className="size-3.5" strokeWidth={2} />
               <span>{account.status}</span>
             </div>

@@ -1,9 +1,15 @@
+import type { ReactNode } from "react";
+
 import { Check, Dot } from "lucide-react";
 
 import type { MeetingDetail } from "@/components/sections/meetings/meetings-data";
+import { cn } from "@/lib/cn";
 
 type MeetingNotesPanelProps = {
+  className?: string;
   detail: MeetingDetail;
+  sectionsSlot?: ReactNode;
+  titleSlot?: ReactNode;
 };
 
 function NotesColumn({
@@ -34,17 +40,31 @@ function NotesColumn({
   );
 }
 
-export function MeetingNotesPanel({ detail }: MeetingNotesPanelProps) {
+export function MeetingNotesPanel({
+  className,
+  detail,
+  sectionsSlot,
+  titleSlot,
+}: MeetingNotesPanelProps) {
   return (
-    <div className="mt-4 rounded-[1.7rem] border border-meetings-border bg-meetings-panel-muted p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.62)] sm:p-5">
-      <p className="max-w-none text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-muted">
-        Meeting notes
-      </p>
-      <div className="mt-4 grid gap-3 lg:grid-cols-3">
-        <NotesColumn items={detail.preparation} title="Preparation" />
-        <NotesColumn items={detail.decisions} title="Decisions" />
-        <NotesColumn items={detail.actions} title="Action items" />
-      </div>
+    <div
+      className={cn(
+        "mt-4 rounded-[1.7rem] border border-meetings-border bg-meetings-panel-muted p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.62)] sm:p-5",
+        className,
+      )}
+    >
+      {titleSlot ?? (
+        <p className="max-w-none text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-muted">
+          Meeting notes
+        </p>
+      )}
+      {sectionsSlot ?? (
+        <div className="mt-4 grid gap-3 lg:grid-cols-3">
+          <NotesColumn items={detail.preparation} title="Preparation" />
+          <NotesColumn items={detail.decisions} title="Decisions" />
+          <NotesColumn items={detail.actions} title="Action items" />
+        </div>
+      )}
     </div>
   );
 }

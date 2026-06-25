@@ -3,15 +3,17 @@ import { cn } from "@/lib/cn";
 import type { MeetingItem } from "@/components/sections/meetings/meetings-data";
 
 type MeetingListItemProps = {
+  className?: string;
   item: MeetingItem;
 };
 
-export function MeetingListItem({ item }: MeetingListItemProps) {
+export function MeetingListItem({ className, item }: MeetingListItemProps) {
   return (
     <div
       className={cn(
         "relative rounded-[1.35rem] border border-transparent bg-white/58 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]",
         item.selected && "border-primary/16 bg-meetings-selected shadow-[0_16px_32px_-24px_rgba(109,61,245,0.35),inset_0_1px_0_rgba(255,255,255,0.7)]",
+        className,
       )}
     >
       <div className="absolute bottom-3 left-0 top-3 w-px bg-meetings-timeline" />
