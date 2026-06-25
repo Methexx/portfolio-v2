@@ -66,28 +66,19 @@ export function ConnectedNotesVisualShell({
     <div
       aria-hidden="true"
       className={cn(
-        "relative mt-14 overflow-hidden rounded-[2.4rem] border border-network-border bg-[radial-gradient(circle_at_50%_24%,rgba(102,171,255,0.18),transparent_18%),radial-gradient(circle_at_50%_78%,rgba(125,98,255,0.18),transparent_24%),linear-gradient(180deg,#07101b_0%,#090f1c_42%,#060b14_100%)] p-4 shadow-[0_30px_80px_-50px_rgba(5,8,18,0.95),inset_0_1px_0_rgba(255,255,255,0.05)] sm:mt-16 sm:p-6",
+        "relative mt-14 overflow-hidden rounded-[2.4rem] bg-[linear-gradient(180deg,#040914_0%,#060c18_35%,#06101f_68%,#040914_100%)] p-4 shadow-[0_28px_72px_-58px_rgba(1,4,12,0.98),inset_0_1px_0_rgba(255,255,255,0.035)] sm:mt-16 sm:p-6",
         className,
       )}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(142,189,255,0.08)_1px,transparent_1px)] bg-[size:1.6rem_1.6rem] opacity-18 sm:opacity-22" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(123,164,255,0.16),transparent_38%),radial-gradient(circle_at_50%_88%,rgba(116,90,255,0.2),transparent_30%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(6,11,20,0.82),transparent_14%,transparent_86%,rgba(6,11,20,0.82))]" />
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(6,11,20,0.32),transparent_18%,transparent_82%,rgba(6,11,20,0.52))]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(140,188,255,0.055)_1px,transparent_1px)] bg-[size:1.6rem_1.6rem] opacity-12 sm:opacity-16" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_78%,rgba(73,124,255,0.28),transparent_26%),radial-gradient(circle_at_50%_44%,rgba(121,190,255,0.12),transparent_24%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(3,7,14,0.92),transparent_15%,transparent_85%,rgba(3,7,14,0.92))]" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(3,7,14,0.82),rgba(3,7,14,0.14)_18%,transparent_36%,transparent_68%,rgba(3,7,14,0.58)_100%)]" />
       {backgroundSlot}
-      {badgeSlot ?? (
-        <>
-          <div className="pointer-events-none absolute left-[8%] top-[14%] rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-[0.72rem] font-medium tracking-[0.08em] text-white/56 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-[3px]">
-            linked context
-          </div>
-          <div className="pointer-events-none absolute right-[10%] top-[18%] hidden rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-[0.72rem] font-medium tracking-[0.08em] text-white/52 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-[3px] md:block">
-            recoverable knowledge
-          </div>
-        </>
-      )}
-      <div className="relative min-h-[28rem] sm:min-h-[34rem] lg:min-h-[40rem]">
+      {badgeSlot}
+      <div className="relative min-h-[30rem] sm:min-h-[36rem] lg:min-h-[42rem]">
         {canvasSlot}
-        {svgSlot ?? (
+        {svgSlot === undefined ? (
           <svg
             className="absolute inset-0 h-full w-full"
             viewBox="0 0 100 100"
@@ -97,11 +88,16 @@ export function ConnectedNotesVisualShell({
               <ConnectedNoteLink key={`${edge.from}-${edge.to}`} edge={edge} nodesById={nodesById} />
             ))}
           </svg>
+        ) : (
+          svgSlot
         )}
-        {nodeSlot ??
+        {nodeSlot === undefined ? (
           connectedNoteNodes.map((node) => (
             <ConnectedNoteNode key={node.id} node={node} />
-          ))}
+          ))
+        ) : (
+          nodeSlot
+        )}
         {foregroundSlot}
       </div>
     </div>
