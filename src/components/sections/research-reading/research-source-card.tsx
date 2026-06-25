@@ -2,10 +2,11 @@ import type { ResearchSource } from "@/components/sections/research-reading/rese
 import { cn } from "@/lib/cn";
 
 type ResearchSourceCardProps = {
+  className?: string;
   source: ResearchSource;
 };
 
-export function ResearchSourceCard({ source }: ResearchSourceCardProps) {
+export function ResearchSourceCard({ className, source }: ResearchSourceCardProps) {
   const Icon = source.icon;
 
   return (
@@ -13,6 +14,7 @@ export function ResearchSourceCard({ source }: ResearchSourceCardProps) {
       className={cn(
         "rounded-[1.2rem] border border-research-border bg-research-panel px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]",
         source.mobileHidden && "hidden sm:block",
+        className,
       )}
     >
       <div className="flex items-start gap-3">
