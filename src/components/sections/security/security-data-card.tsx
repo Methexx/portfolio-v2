@@ -2,10 +2,11 @@ import type { SecurityDataItem } from "@/components/sections/security/security-d
 import { cn } from "@/lib/cn";
 
 type SecurityDataCardProps = {
+  className?: string;
   item: SecurityDataItem;
 };
 
-export function SecurityDataCard({ item }: SecurityDataCardProps) {
+export function SecurityDataCard({ className, item }: SecurityDataCardProps) {
   const Icon = item.icon;
 
   return (
@@ -13,6 +14,7 @@ export function SecurityDataCard({ item }: SecurityDataCardProps) {
       className={cn(
         "rounded-[1.35rem] border border-security-border bg-security-panel px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]",
         item.emphasis && "border-primary/18 bg-security-panel-muted",
+        className,
       )}
     >
       <div className="flex items-start gap-3">
