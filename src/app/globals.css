@@ -60,6 +60,13 @@
   --meetings-accent: #8b66ff;
   --meetings-selected: rgba(238, 230, 255, 0.86);
   --meetings-timeline: rgba(109, 61, 245, 0.18);
+  --integrations-surface: #f2eeea;
+  --integrations-card: rgba(255, 255, 255, 0.9);
+  --integrations-card-muted: rgba(247, 243, 249, 0.86);
+  --integrations-border: rgba(109, 61, 245, 0.12);
+  --integrations-accent: #8d6cff;
+  --integrations-line: rgba(109, 61, 245, 0.18);
+  --integrations-hub: #2a1b3d;
   --container-width: 88rem;
   --content-narrow: 46rem;
   --section-spacing-compact: clamp(4rem, 8vw, 6rem);
@@ -131,6 +138,13 @@
   --color-meetings-accent: var(--meetings-accent);
   --color-meetings-selected: var(--meetings-selected);
   --color-meetings-timeline: var(--meetings-timeline);
+  --color-integrations-surface: var(--integrations-surface);
+  --color-integrations-card: var(--integrations-card);
+  --color-integrations-card-muted: var(--integrations-card-muted);
+  --color-integrations-border: var(--integrations-border);
+  --color-integrations-accent: var(--integrations-accent);
+  --color-integrations-line: var(--integrations-line);
+  --color-integrations-hub: var(--integrations-hub);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --radius-sm: var(--radius-sm);
