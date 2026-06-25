@@ -22,6 +22,13 @@
   --product-stage: #261536;
   --product-panel: rgba(55, 34, 74, 0.86);
   --product-panel-muted: rgba(99, 77, 126, 0.42);
+  --preview-bg: #1f142b;
+  --preview-sidebar: rgba(47, 31, 64, 0.9);
+  --preview-editor: #1a1224;
+  --preview-inspector: rgba(41, 27, 57, 0.92);
+  --preview-border: rgba(221, 210, 255, 0.08);
+  --preview-muted: rgba(224, 217, 244, 0.52);
+  --preview-accent: #8b5cf6;
   --container-width: 88rem;
   --content-narrow: 46rem;
   --section-spacing-compact: clamp(4rem, 8vw, 6rem);
@@ -55,6 +62,13 @@
   --color-product-stage: var(--product-stage);
   --color-product-panel: var(--product-panel);
   --color-product-panel-muted: var(--product-panel-muted);
+  --color-preview-bg: var(--preview-bg);
+  --color-preview-sidebar: var(--preview-sidebar);
+  --color-preview-editor: var(--preview-editor);
+  --color-preview-inspector: var(--preview-inspector);
+  --color-preview-border: var(--preview-border);
+  --color-preview-muted: var(--preview-muted);
+  --color-preview-accent: var(--preview-accent);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --radius-sm: var(--radius-sm);
