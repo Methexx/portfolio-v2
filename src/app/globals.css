@@ -1,16 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f7f5f2;
-  --foreground: #17151b;
-  --muted: #6f6a73;
-  --muted-foreground: #817b85;
-  --surface: #ffffff;
-  --surface-subtle: #f0ede9;
+  --background: #f6f3ef;
+  --background-soft: #faf8f5;
+  --foreground: #111018;
+  --muted: #6f6877;
+  --muted-foreground: #807987;
+  --surface: rgba(255, 255, 255, 0.72);
+  --surface-subtle: #f2eeea;
   --surface-dark: #24152f;
   --primary: #6d3df5;
   --primary-bright: #8b5cf6;
   --primary-soft: #e9e0ff;
+  --accent-blue: #5e7cff;
+  --dark-scene: #050716;
   --border: rgba(31, 24, 37, 0.12);
   --border-strong: rgba(31, 24, 37, 0.2);
   --shadow-color: rgba(39, 20, 50, 0.12);
@@ -172,12 +175,54 @@ body {
   min-height: 100vh;
   margin: 0;
   background:
-    radial-gradient(circle at top, rgba(139, 92, 246, 0.1), transparent 32%),
+    radial-gradient(circle at top, rgba(154, 123, 255, 0.12), transparent 34%),
+    radial-gradient(circle at 50% 18%, rgba(121, 156, 255, 0.08), transparent 22%),
     var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), sans-serif;
   line-height: 1.6;
   overflow-x: clip;
+}
+
+.homepage-shell {
+  isolation: isolate;
+}
+
+.homepage-atmosphere,
+.homepage-dark-halo,
+.homepage-section-glow {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.homepage-atmosphere {
+  background:
+    radial-gradient(circle at 50% 9%, rgba(244, 224, 197, 0.22), transparent 20%),
+    radial-gradient(circle at 18% 22%, rgba(168, 136, 255, 0.12), transparent 24%),
+    radial-gradient(circle at 78% 34%, rgba(111, 147, 255, 0.1), transparent 22%),
+    linear-gradient(180deg, var(--background-soft) 0%, var(--background) 36%, #f5f2ed 100%);
+}
+
+.homepage-dark-halo {
+  opacity: 0.7;
+}
+
+.homepage-dark-halo-1 {
+  background: radial-gradient(circle at 50% 38%, rgba(8, 14, 30, 0.14), transparent 18%);
+}
+
+.homepage-dark-halo-2 {
+  background: radial-gradient(circle at 50% 73%, rgba(6, 12, 24, 0.12), transparent 16%);
+}
+
+.homepage-section-glow-1 {
+  background: radial-gradient(circle at 50% 56%, rgba(125, 98, 255, 0.1), transparent 18%);
+}
+
+.homepage-section-glow-2 {
+  background: radial-gradient(circle at 50% 84%, rgba(94, 124, 255, 0.08), transparent 14%);
 }
 
 ::selection {
