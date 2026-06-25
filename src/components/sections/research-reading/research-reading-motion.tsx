@@ -26,6 +26,7 @@ import { ResearchReadingFeatures } from "@/components/sections/research-reading/
 import { ResearchReadingHeader } from "@/components/sections/research-reading/research-reading-header";
 import { ResearchReadingVisual } from "@/components/sections/research-reading/research-reading-visual";
 import { ResearchSourceCard } from "@/components/sections/research-reading/research-source-card";
+import { useAnimationActivity } from "@/hooks/use-animation-activity";
 import { cn } from "@/lib/cn";
 import { gentleEase, standardEase } from "@/lib/motion";
 
@@ -113,6 +114,9 @@ export function ResearchReadingMotion() {
   const hasEntered = useInView(sectionRef, sectionReveal);
   const [isMobile, setIsMobile] = useState(false);
   const [allowHover, setAllowHover] = useState(false);
+  const [activeSourceIndex, setActiveSourceIndex] = useState(0);
+  const [activeHighlightIndex, setActiveHighlightIndex] = useState(0);
+  const [activeSyncIndex, setActiveSyncIndex] = useState(0);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -157,6 +161,26 @@ export function ResearchReadingMotion() {
   const visibleHighlights = useMemo(() => readingHighlights.slice(0, 3), []);
   const visibleTags = ["architecture", "research", "highlights"] as const;
   const isActive = shouldReduceMotion || hasEntered;
+  const { canAnimate } = useAnimationActivity({
+    inView: hasEntered,
+    reducedMotion: shouldReduceMotion,
+  });
+
+  useEffect(() => {
+    if (!canAnimate) {
+      return;
+    }
+
+    const sourceIntervalId = window.setInterval(() => {
+      setActiveSourceIndex((current) => (current + 1) % visibleSources.length);
+      setActiveHighlightIndex((current) => (current + 1) % visibleHighlights.length);
+      setActiveSyncIndex((current) => (current + 1) % deviceSyncItems.length);
+    }, isMobile ? 2200 : 2800);
+
+    return () => {
+      window.clearInterval(sourceIntervalId);
+    };
+  }, [canAnimate, isMobile, visibleHighlights.length, visibleSources.length]);
 
   const visualTransition: Transition = {
     delay: timing.visualDelay,
@@ -294,6 +318,9 @@ export function ResearchReadingMotion() {
                       className={cn(
                         canHover &&
                           "transition duration-200 ease-[var(--ease-standard)] hover:-translate-y-0.5 hover:border-primary/20",
+                        canAnimate &&
+                          index === activeSourceIndex &&
+                          "border-primary/20 bg-white/92 shadow-[0_24px_46px_-34px_rgba(109,61,245,0.24),inset_0_1px_0_rgba(255,255,255,0.76)]",
                       )}
                     />
                   </motion.div>
@@ -378,6 +405,9 @@ export function ResearchReadingMotion() {
                             "rounded-[1.2rem] border border-primary/10 bg-research-highlight px-4 py-3",
                             canHover &&
                               "transition duration-200 ease-[var(--ease-standard)] hover:border-primary/14 hover:bg-primary/[0.1]",
+                            canAnimate &&
+                              index === activeHighlightIndex &&
+                              "border-primary/18 bg-primary/[0.12] shadow-[0_18px_34px_-28px_rgba(109,61,245,0.26)]",
                           )}
                           initial={{ opacity: 0, y: bodyTravelY, backgroundColor: "rgba(157,125,255,0.08)" }}
                           animate={
@@ -468,9 +498,20 @@ export function ResearchReadingMotion() {
                         className={cn(
                           canHover &&
                             "transition duration-200 ease-[var(--ease-standard)] hover:border-primary/18",
+                          canAnimate &&
+                            index === activeSyncIndex &&
+                            "border-primary/18 bg-white/88 shadow-[0_18px_36px_-28px_rgba(109,61,245,0.18)]",
                         )}
-                        dotClassName="motion-safe:transform-gpu"
-                        statusClassName="transition duration-200 ease-[var(--ease-standard)]"
+                        dotClassName={cn(
+                          "motion-safe:transform-gpu",
+                          canAnimate &&
+                            index === activeSyncIndex &&
+                            "bg-primary shadow-[0_0_14px_rgba(109,61,245,0.45)]",
+                        )}
+                        statusClassName={cn(
+                          "transition duration-200 ease-[var(--ease-standard)]",
+                          canAnimate && index === activeSyncIndex && "text-foreground",
+                        )}
                       />
                     </motion.div>
                   ))}

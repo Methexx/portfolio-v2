@@ -23,6 +23,7 @@ import { SecurityFeatures } from "@/components/sections/security/security-featur
 import { SecurityHeader } from "@/components/sections/security/security-header";
 import { SecurityScramblePreview } from "@/components/sections/security/security-scramble-preview";
 import { SecurityVisual } from "@/components/sections/security/security-visual";
+import { useAnimationActivity } from "@/hooks/use-animation-activity";
 import { cn } from "@/lib/cn";
 import { gentleEase, standardEase } from "@/lib/motion";
 
@@ -156,6 +157,7 @@ export function SecurityMotion() {
   const [isMobile, setIsMobile] = useState(false);
   const [allowHover, setAllowHover] = useState(false);
   const [cipherLines, setCipherLines] = useState<string[]>([...securityCipherLines]);
+  const [activeAccessIndex, setActiveAccessIndex] = useState(0);
 
   const hasStartedRef = useRef(false);
   const runIdRef = useRef(0);
@@ -188,6 +190,10 @@ export function SecurityMotion() {
   const timing = isMobile ? mobileTiming : securityTiming;
   const canHover = allowHover && !shouldReduceMotion;
   const isActive = shouldReduceMotion || isInView;
+  const { canAnimate } = useAnimationActivity({
+    inView: isInView,
+    reducedMotion: shouldReduceMotion,
+  });
 
   const visibleCipherLines = useMemo(() => securityCipherLines, []);
 
@@ -206,6 +212,20 @@ export function SecurityMotion() {
       runIdRef.current += 1;
     };
   }, []);
+
+  useEffect(() => {
+    if (!canAnimate) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      setActiveAccessIndex((current) => (current + 1) % securityAccessItems.length);
+    }, isMobile ? 2200 : 2800);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [canAnimate, isMobile]);
 
   useEffect(() => {
     if (shouldReduceMotion || !isInView || hasStartedRef.current) {
@@ -594,6 +614,7 @@ export function SecurityMotion() {
                           className={cn(
                             "flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0",
                             canHover && "transition duration-200 ease-[var(--ease-standard)] hover:text-white",
+                            canAnimate && index === activeAccessIndex && "text-white",
                           )}
                           initial={{ opacity: 0, y: 6 }}
                           animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 6 }}
@@ -604,7 +625,7 @@ export function SecurityMotion() {
                           }}
                         >
                           <div className="flex items-center gap-3">
-                            <div className="flex h-9 w-9 items-center justify-center rounded-[0.95rem] border border-primary/14 bg-primary/[0.08] text-security-accent">
+                            <div className={cn("flex h-9 w-9 items-center justify-center rounded-[0.95rem] border border-primary/14 bg-primary/[0.08] text-security-accent", canAnimate && index === activeAccessIndex && "border-primary/24 bg-primary/[0.14] shadow-[0_18px_36px_-28px_rgba(157,125,255,0.36)]")}>
                               <Icon aria-hidden="true" className="size-4.5" strokeWidth={1.8} />
                             </div>
                             <span className="text-[0.95rem] font-medium text-white">
@@ -612,7 +633,7 @@ export function SecurityMotion() {
                             </span>
                           </div>
                           <motion.span
-                            className="text-[0.76rem] font-medium uppercase tracking-[0.14em] text-security-status"
+                            className={cn("text-[0.76rem] font-medium uppercase tracking-[0.14em] text-security-status", canAnimate && index === activeAccessIndex && "text-primary-soft")}
                             initial={{ opacity: 0.7, scale: 0.94 }}
                             animate={
                               isActive

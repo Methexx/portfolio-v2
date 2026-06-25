@@ -4,12 +4,14 @@ import type { IntegrationItem } from "@/components/sections/integrations/integra
 import { IntegrationIconTile } from "@/components/sections/integrations/integration-icon-tile";
 
 type IntegrationCardProps = {
+  active?: boolean;
   className?: string;
   item: IntegrationItem;
   muted?: boolean;
 };
 
 export function IntegrationCard({
+  active = false,
   className,
   item,
   muted = false,
@@ -21,6 +23,7 @@ export function IntegrationCard({
         muted
           ? "border-integrations-border/70 bg-integrations-card-muted"
           : "border-integrations-border bg-integrations-card",
+        active && !muted && "border-primary/18 bg-white shadow-[0_22px_48px_-34px_rgba(109,61,245,0.24),inset_0_1px_0_rgba(255,255,255,0.84)]",
         className,
       )}
     >
@@ -34,6 +37,7 @@ export function IntegrationCard({
                 muted
                   ? "border-border/70 bg-white/78 text-muted"
                   : "border-primary/10 bg-primary/[0.05] text-primary",
+                active && !muted && "border-primary/18 bg-primary/[0.09]",
               )}
             >
               {item.category}

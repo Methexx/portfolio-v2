@@ -19,10 +19,18 @@ import {
   aiShowcaseCopy,
   type AiAction,
 } from "@/components/sections/ai-showcase/ai-showcase-data";
+import { useAnimationActivity } from "@/hooks/use-animation-activity";
 import { cn } from "@/lib/cn";
 import { gentleEase, standardEase } from "@/lib/motion";
 
-type AiDemoPhase = "idle" | "prompt" | "processing" | "responding" | "complete";
+type AiDemoPhase =
+  | "idle"
+  | "prompt"
+  | "processing"
+  | "responding"
+  | "complete"
+  | "action"
+  | "resting";
 type ActionFeedbackMap = Partial<Record<AiAction["id"], string>>;
 
 const demoTimings = {
@@ -31,6 +39,8 @@ const demoTimings = {
   processingDelayMs: 660,
   chunkIntervalMs: 300,
   completeDelayMs: 170,
+  actionDelayMs: 620,
+  restingDelayMs: 1380,
   feedbackResetMs: 1500,
 } as const;
 
@@ -86,10 +96,15 @@ export function AiShowcaseDemo() {
     amount: 0.25,
     once: true,
   });
+  const { canAnimate } = useAnimationActivity({
+    inView: isInView,
+    reducedMotion: Boolean(shouldReduceMotion),
+  });
 
   const [phase, setPhase] = useState<AiDemoPhase>("idle");
   const [visibleChunkCount, setVisibleChunkCount] = useState(0);
   const [actionsReady, setActionsReady] = useState(false);
+  const [activeActionId, setActiveActionId] = useState<AiAction["id"] | null>(null);
   const [capabilitiesReady, setCapabilitiesReady] = useState(false);
   const [hasRevealedCapabilities, setHasRevealedCapabilities] = useState(false);
   const [feedbackLabels, setFeedbackLabels] = useState<ActionFeedbackMap>({});
@@ -134,6 +149,7 @@ export function AiShowcaseDemo() {
     setFeedbackLabels({});
     setVisibleChunkCount(0);
     setActionsReady(false);
+    setActiveActionId(null);
 
     if (mode === "full") {
       setPhase("prompt");
@@ -178,6 +194,18 @@ export function AiShowcaseDemo() {
         setHasRevealedCapabilities(true);
       }
     }, responseStartDelay + demoTimings.chunkIntervalMs * aiShowcaseCopy.responseChunks.length + demoTimings.completeDelayMs);
+
+    schedule(() => {
+      if (runIdRef.current !== runId) return;
+      setPhase("action");
+      setActiveActionId("insert");
+    }, responseStartDelay + demoTimings.chunkIntervalMs * aiShowcaseCopy.responseChunks.length + demoTimings.completeDelayMs + demoTimings.actionDelayMs);
+
+    schedule(() => {
+      if (runIdRef.current !== runId) return;
+      setPhase("resting");
+      setActiveActionId(null);
+    }, responseStartDelay + demoTimings.chunkIntervalMs * aiShowcaseCopy.responseChunks.length + demoTimings.completeDelayMs + demoTimings.actionDelayMs + demoTimings.restingDelayMs);
   }, [clearScheduled, schedule, shouldReduceMotion]);
 
   useEffect(() => {
@@ -190,6 +218,20 @@ export function AiShowcaseDemo() {
       startDemo("full");
     }, demoTimings.autoStartDelayMs);
   }, [hasEntered, schedule, shouldReduceMotion, startDemo]);
+
+  useEffect(() => {
+    if (shouldReduceMotion || !canAnimate || phase !== "resting") {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      startDemo("response");
+    }, demoTimings.restingDelayMs);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [canAnimate, phase, shouldReduceMotion, startDemo]);
 
   useEffect(() => {
     return () => {
@@ -366,6 +408,7 @@ export function AiShowcaseDemo() {
               <AiActionBar
                 interactive
                 enabled
+                activeActionId={activeActionId}
                 feedbackLabels={feedbackLabels}
                 onAction={handleAction}
               />
@@ -462,7 +505,12 @@ export function AiShowcaseDemo() {
             }
             responseCard={
               <AiResponseCard
-                active={phase === "responding" || phase === "complete"}
+                active={
+                  phase === "responding" ||
+                  phase === "complete" ||
+                  phase === "action" ||
+                  phase === "resting"
+                }
                 displayedResponse={displayedResponse}
                 fullResponseAriaText={aiShowcaseCopy.responseText}
                 statusSlot={
@@ -473,6 +521,10 @@ export function AiShowcaseDemo() {
                   ) : phase === "complete" ? (
                     <span className="ml-auto rounded-full border border-primary/16 bg-primary/10 px-2.5 py-1 text-[0.72rem] uppercase tracking-[0.16em] text-ai-panel-accent">
                       Ready
+                    </span>
+                  ) : phase === "action" ? (
+                    <span className="ml-auto rounded-full border border-primary/16 bg-primary/10 px-2.5 py-1 text-[0.72rem] uppercase tracking-[0.16em] text-ai-panel-accent">
+                      Action focus
                     </span>
                   ) : null
                 }
@@ -491,6 +543,7 @@ export function AiShowcaseDemo() {
                 <AiActionBar
                   interactive
                   enabled={actionsReady}
+                  activeActionId={activeActionId}
                   feedbackLabels={feedbackLabels}
                   onAction={handleAction}
                   disabledActions={{ rerun: isRunning }}

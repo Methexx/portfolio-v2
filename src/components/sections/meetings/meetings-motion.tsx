@@ -26,6 +26,7 @@ import { MeetingNotesPanel } from "@/components/sections/meetings/meeting-notes-
 import { MeetingsFeatures } from "@/components/sections/meetings/meetings-features";
 import { MeetingsHeader } from "@/components/sections/meetings/meetings-header";
 import { MeetingsVisual } from "@/components/sections/meetings/meetings-visual";
+import { useAnimationActivity } from "@/hooks/use-animation-activity";
 import { cn } from "@/lib/cn";
 import { gentleEase, standardEase } from "@/lib/motion";
 
@@ -121,6 +122,77 @@ const detailTravel = {
   mobileY: 12,
 } as const;
 
+const meetingDetailStates = [
+  selectedMeetingDetail,
+  {
+    ...selectedMeetingDetail,
+    title: "Product planning",
+    status: "Focused",
+    time: "9:00 AM - 9:45 AM",
+    duration: "45 min",
+    purpose:
+      "Align the next product milestone, review dependencies, and confirm what ships in the next working session.",
+    agenda: [
+      "Review current scope",
+      "Prioritize follow-up tasks",
+      "Confirm delivery sequence",
+      "Lock next checkpoint",
+    ],
+    projectContext: [
+      "AI showcase demo",
+      "Integrations motion pass",
+      "Hero polish checklist",
+    ],
+    preparation: [
+      "Collect active risks",
+      "Confirm scope changes",
+      "Review demo priorities",
+    ],
+    decisions: [
+      "Sequence integrations after meetings polish",
+      "Keep mobile density lower than desktop",
+    ],
+    actions: [
+      "Update feature grid copy states",
+      "Review AI loop timings",
+      "Capture final QA notes",
+    ],
+  },
+  {
+    ...selectedMeetingDetail,
+    title: "Mobile experience review",
+    status: "In review",
+    time: "10:30 AM - 11:00 AM",
+    duration: "30 min",
+    purpose:
+      "Check readability, motion density, and simplified stacked workflows for smaller screens before release.",
+    agenda: [
+      "Audit narrow viewport spacing",
+      "Reduce decorative loops on mobile",
+      "Confirm touch-safe interactions",
+    ],
+    projectContext: [
+      "Research capture flow",
+      "Meetings mobile stack",
+      "Connected Notes density",
+    ],
+    preparation: [
+      "Capture 375px screenshots",
+      "Review mobile headings",
+      "Check overflow boundaries",
+    ],
+    decisions: [
+      "Remove decorative track from mobile integrations",
+      "Keep a single active workflow on mobile",
+    ],
+    actions: [
+      "Verify 320px hero wrapping",
+      "Reduce mobile particle counts",
+      "Check CTA tap targets",
+    ],
+  },
+] as const;
+
 export function MeetingsMotion() {
   const reducedMotionPreference = useReducedMotion();
   const shouldReduceMotion = Boolean(reducedMotionPreference);
@@ -128,6 +200,7 @@ export function MeetingsMotion() {
   const isInView = useInView(sectionRef, sectionReveal);
   const [isMobile, setIsMobile] = useState(false);
   const [allowHover, setAllowHover] = useState(false);
+  const [activeMeetingIndex, setActiveMeetingIndex] = useState(2);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -154,6 +227,10 @@ export function MeetingsMotion() {
 
   const timing = isMobile ? mobileTiming : desktopTiming;
   const isActive = shouldReduceMotion || isInView;
+  const { canAnimate } = useAnimationActivity({
+    inView: isInView,
+    reducedMotion: shouldReduceMotion,
+  });
   const canHover = allowHover && !shouldReduceMotion;
   const visibleAccounts = useMemo(
     () => calendarAccounts.filter((account) => !isMobile || !account.mobileHidden),
@@ -163,14 +240,30 @@ export function MeetingsMotion() {
     () => meetingItems.filter((item) => !isMobile || !item.mobileHidden),
     [isMobile],
   );
-  const selectedMeetingId = "architecture-discussion";
+  useEffect(() => {
+    if (!canAnimate) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      setActiveMeetingIndex((current) => (current + 1) % Math.max(visibleMeetings.length, 1));
+    }, isMobile ? 2600 : 3200);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [canAnimate, isMobile, visibleMeetings.length]);
+
+  const selectedMeetingId =
+    visibleMeetings[activeMeetingIndex % Math.max(visibleMeetings.length, 1)]?.id ??
+    "architecture-discussion";
   const visualTransition: Transition = {
     delay: timing.workspaceDelay,
     duration: isMobile ? 0.88 : 1.02,
     ease: standardEase,
   };
 
-  const detail = selectedMeetingDetail;
+  const detail = meetingDetailStates[activeMeetingIndex % meetingDetailStates.length];
 
   return (
     <div ref={sectionRef} className="mx-auto max-w-[84rem]">
@@ -380,11 +473,11 @@ export function MeetingsMotion() {
                           duration: item.id === selectedMeetingId ? 0.48 : 0.42,
                           ease: standardEase,
                         }}
-                      >
-                        <MeetingListItem
-                          item={item}
-                          className={cn(
-                            canHover &&
+                    >
+                      <MeetingListItem
+                        item={{ ...item, selected: item.id === selectedMeetingId }}
+                        className={cn(
+                          canHover &&
                               "transition duration-200 ease-[var(--ease-standard)] hover:border-primary/12 hover:bg-white/74",
                             item.id === selectedMeetingId &&
                               "transition duration-300 ease-[var(--ease-standard)]",
@@ -397,6 +490,7 @@ export function MeetingsMotion() {
               }
               detailPanelSlot={
                 <motion.div
+                  key={selectedMeetingId}
                   initial={{
                     opacity: 0,
                     x: isMobile ? detailTravel.mobileX : detailTravel.desktopX,

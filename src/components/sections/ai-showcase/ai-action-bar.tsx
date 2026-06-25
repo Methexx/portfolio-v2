@@ -9,6 +9,7 @@ type AiActionBarProps = {
   actions?: readonly AiAction[];
   interactive?: boolean;
   enabled?: boolean;
+  activeActionId?: AiAction["id"] | null;
   feedbackLabels?: Partial<Record<AiAction["id"], string>>;
   disabledActions?: Partial<Record<AiAction["id"], boolean>>;
   onAction?: (id: AiAction["id"]) => void;
@@ -18,6 +19,7 @@ export function AiActionBar({
   actions = actionGroups,
   interactive = false,
   enabled = true,
+  activeActionId = null,
   feedbackLabels,
   disabledActions,
   onAction,
@@ -27,6 +29,7 @@ export function AiActionBar({
       {actions.map(({ id, label, shortcut, icon: Icon }) => {
         const buttonLabel = feedbackLabels?.[id] ?? label;
         const disabled = !enabled || disabledActions?.[id] === true;
+        const isActive = activeActionId === id;
 
         return interactive ? (
           <button
@@ -39,13 +42,14 @@ export function AiActionBar({
               enabled && !disabled
                 ? "text-white/82 hover:border-primary/18 hover:bg-white/[0.04]"
                 : "opacity-55",
+              isActive && enabled && !disabled && "border-primary/22 bg-primary/[0.12] shadow-[0_18px_36px_-26px_rgba(109,61,245,0.42)]",
             )}
           >
             <div className="flex items-center gap-2.5">
-              <Icon aria-hidden="true" className="size-4 text-white/68" strokeWidth={1.8} />
+              <Icon aria-hidden="true" className={cn("size-4 text-white/68", isActive && "text-primary-soft")} strokeWidth={1.8} />
               <span className="min-w-[4.8rem] text-left font-medium">{buttonLabel}</span>
             </div>
-            <span className="rounded-full border border-white/8 px-2 py-0.5 text-[0.72rem] text-ai-panel-muted">
+            <span className={cn("rounded-full border border-white/8 px-2 py-0.5 text-[0.72rem] text-ai-panel-muted", isActive && "border-primary/20 text-primary-soft")}>
               {shortcut}
             </span>
           </button>
