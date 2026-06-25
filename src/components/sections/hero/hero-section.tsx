@@ -1,10 +1,12 @@
-import { FadeIn } from "@/components/animations/fade-in";
-import { Reveal } from "@/components/animations/reveal";
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
 import { HeroActions } from "@/components/sections/hero/hero-actions";
 import { HeroAnnouncement } from "@/components/sections/hero/hero-announcement";
 import { HeroBackground } from "@/components/sections/hero/hero-background";
+import {
+  HeroAnnouncementEntrance,
+  HeroParagraphEntrance,
+} from "@/components/sections/hero/hero-entrance";
 import {
   HeroHeading,
   HeroParagraph,
@@ -20,39 +22,27 @@ export function HeroSection() {
       <HeroBackground />
       <Container className="relative">
         <div className="mx-auto flex w-full max-w-[82rem] flex-col items-center">
-          <FadeIn className="w-full text-center" duration={0.45}>
+          <HeroAnnouncementEntrance className="w-full text-center">
             <div className="mx-auto w-fit">
               <HeroAnnouncement />
             </div>
-          </FadeIn>
-          <Reveal
-            className="mt-7 w-full max-w-[58rem]"
-            childClassName="block"
-            delay={0.08}
-            duration={0.76}
-            mode="mount"
-          >
+          </HeroAnnouncementEntrance>
+          <div className="mt-7 w-full max-w-[58rem]">
             <div className="mx-auto flex w-full max-w-[58rem] justify-center text-center">
               <HeroHeading />
             </div>
-          </Reveal>
-          <FadeIn className="mt-6 w-full max-w-[58rem] text-center" delay={0.16} duration={0.52}>
+          </div>
+          <HeroParagraphEntrance className="mt-6 w-full max-w-[58rem] text-center">
             <div className="mx-auto flex w-full max-w-[44rem] justify-center">
               <HeroParagraph />
             </div>
-          </FadeIn>
-          <FadeIn className="w-full max-w-[58rem]" delay={0.2} duration={0.52}>
+          </HeroParagraphEntrance>
+          <div className="w-full max-w-[58rem]">
             <HeroActions />
-          </FadeIn>
-          <Reveal
-            className="mt-2 w-full"
-            childClassName="block"
-            delay={0.24}
-            duration={0.86}
-            mode="mount"
-          >
+          </div>
+          <div className="w-full">
             <HeroProductStage />
-          </Reveal>
+          </div>
         </div>
       </Container>
     </Section>

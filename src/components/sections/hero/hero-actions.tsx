@@ -1,5 +1,9 @@
 import Link from "next/link";
 
+import {
+  HeroActionItem,
+  HeroActionsEntrance,
+} from "@/components/sections/hero/hero-entrance";
 import { cn } from "@/lib/cn";
 
 const actionBase =
@@ -7,25 +11,29 @@ const actionBase =
 
 export function HeroActions() {
   return (
-    <div className="mt-9 flex w-full flex-col items-stretch justify-center gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-      <Link
-        href="#work"
-        className={cn(
-          actionBase,
-          "bg-primary text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.16),0_20px_38px_-24px_rgba(109,61,245,0.68)] hover:-translate-y-0.5 hover:bg-primary-bright active:translate-y-0 active:scale-[0.99]",
-        )}
-      >
-        Explore work
-      </Link>
-      <Link
-        href="#about"
-        className={cn(
-          actionBase,
-          "border border-border bg-white/74 text-foreground shadow-[0_14px_28px_-26px_rgba(39,20,50,0.28)] hover:-translate-y-0.5 hover:border-border-strong hover:bg-surface",
-        )}
-      >
-        About me
-      </Link>
-    </div>
+    <HeroActionsEntrance className="mt-9 flex w-full flex-col items-stretch justify-center gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+      <HeroActionItem>
+        <Link
+          href="#work"
+          className={cn(
+            actionBase,
+            "bg-primary text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.16),0_20px_38px_-24px_rgba(109,61,245,0.68)] hover:-translate-y-0.5 hover:bg-primary-bright active:translate-y-0 active:scale-[0.99]",
+          )}
+        >
+          Explore work
+        </Link>
+      </HeroActionItem>
+      <HeroActionItem>
+        <Link
+          href="#about"
+          className={cn(
+            actionBase,
+            "border border-border bg-white/74 text-foreground shadow-[0_14px_28px_-26px_rgba(39,20,50,0.28)] hover:-translate-y-0.5 hover:border-border-strong hover:bg-surface",
+          )}
+        >
+          About me
+        </Link>
+      </HeroActionItem>
+    </HeroActionsEntrance>
   );
 }

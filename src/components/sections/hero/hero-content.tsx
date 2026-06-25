@@ -1,8 +1,16 @@
+import { HeroHeadingReveal } from "@/components/sections/hero/hero-entrance";
+
+const headingLines = [
+  "Software experiences",
+  "designed to feel effortless.",
+] as const;
+
 export function HeroHeading() {
   return (
-    <h1 className="max-w-[13ch] text-[clamp(2.75rem,7vw,5.35rem)] font-medium tracking-[-0.055em] text-foreground sm:text-[clamp(3.2rem,7vw,5.9rem)]">
-      Software experiences designed to feel effortless.
-    </h1>
+    <HeroHeadingReveal
+      lines={headingLines}
+      className="mx-auto max-w-[13ch] text-[clamp(2.75rem,7vw,5.35rem)] font-medium tracking-[-0.055em] text-foreground sm:text-[clamp(3.2rem,7vw,5.9rem)]"
+    />
   );
 }
 
