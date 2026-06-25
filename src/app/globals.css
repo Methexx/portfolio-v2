@@ -34,6 +34,12 @@
   --ai-panel-muted: rgba(226, 219, 243, 0.66);
   --ai-panel-border: rgba(221, 210, 255, 0.1);
   --ai-panel-accent: #9d7dff;
+  --network-surface: #f2efeb;
+  --network-node: rgba(255, 255, 255, 0.9);
+  --network-node-primary: rgba(109, 61, 245, 0.12);
+  --network-border: rgba(109, 61, 245, 0.14);
+  --network-line: rgba(109, 61, 245, 0.18);
+  --network-muted: rgba(94, 86, 100, 0.7);
   --container-width: 88rem;
   --content-narrow: 46rem;
   --section-spacing-compact: clamp(4rem, 8vw, 6rem);
@@ -79,6 +85,12 @@
   --color-ai-panel-muted: var(--ai-panel-muted);
   --color-ai-panel-border: var(--ai-panel-border);
   --color-ai-panel-accent: var(--ai-panel-accent);
+  --color-network-surface: var(--network-surface);
+  --color-network-node: var(--network-node);
+  --color-network-node-primary: var(--network-node-primary);
+  --color-network-border: var(--network-border);
+  --color-network-line: var(--network-line);
+  --color-network-muted: var(--network-muted);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --radius-sm: var(--radius-sm);
