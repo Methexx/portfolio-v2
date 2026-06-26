@@ -30,6 +30,16 @@ export type PreviewActionItem = Readonly<{
   label: string;
 }>;
 
+export type PreviewWorkspaceState = Readonly<{
+  actionLabel: string;
+  activeAction: "history" | "link" | "pin";
+  activeMeeting: string;
+  activeNav: PreviewNavItem["icon"];
+  activePinned: string;
+  selectedDay: string;
+  title: string;
+}>;
+
 export const previewNavItems: readonly PreviewNavItem[] = [
   { icon: "daily", label: "Daily notes", active: true },
   { icon: "notes", label: "All notes" },
@@ -138,4 +148,34 @@ export const previewCalendarDays: readonly PreviewCalendarDay[] = [
   { day: "28" },
   { day: "29" },
   { day: "30" },
+] as const;
+
+export const previewWorkspaceStates: readonly PreviewWorkspaceState[] = [
+  {
+    actionLabel: "Linked project note saved",
+    activeAction: "pin",
+    activeMeeting: "Design review",
+    activeNav: "daily",
+    activePinned: "Product thinking",
+    selectedDay: "2",
+    title: "Today I explored a new product direction",
+  },
+  {
+    actionLabel: "Architecture context connected",
+    activeAction: "link",
+    activeMeeting: "Engineering sync",
+    activeNav: "notes",
+    activePinned: "Interface systems",
+    selectedDay: "12",
+    title: "What should I document?",
+  },
+  {
+    actionLabel: "Meeting follow-up resolved",
+    activeAction: "history",
+    activeMeeting: "Product planning",
+    activeNav: "tasks",
+    activePinned: "Research notes",
+    selectedDay: "18",
+    title: "A few principles",
+  },
 ] as const;

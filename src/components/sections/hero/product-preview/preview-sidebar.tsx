@@ -13,9 +13,14 @@ import {
 import {
   previewNavItems,
   previewPinnedNotes,
+  type PreviewWorkspaceState,
 } from "@/components/sections/hero/product-preview/preview-placeholder-data";
 
-export function PreviewSidebar() {
+type PreviewSidebarProps = {
+  state?: PreviewWorkspaceState;
+};
+
+export function PreviewSidebar({ state }: PreviewSidebarProps) {
   return (
     <aside className="flex h-full min-h-0 flex-col bg-preview-sidebar px-2.5 py-3 text-white/72 sm:px-3 sm:py-4 md:px-4">
       <PreviewSearchEntrance className="flex items-center gap-2">
@@ -34,8 +39,11 @@ export function PreviewSidebar() {
       <PreviewSidebarGroup className="mt-4 grid gap-1.5">
         {previewNavItems.map((item) => (
           <PreviewSidebarItem key={item.label}>
-            <PreviewSelectedNavAccent active={item.active}>
-              <PreviewNavItem item={item} />
+            <PreviewSelectedNavAccent active={state ? state.activeNav === item.icon : item.active}>
+              <PreviewNavItem
+                item={item}
+                active={state ? state.activeNav === item.icon : item.active}
+              />
             </PreviewSelectedNavAccent>
           </PreviewSidebarItem>
         ))}
@@ -49,9 +57,13 @@ export function PreviewSidebar() {
           {previewPinnedNotes.slice(0, 5).map((note, index) => (
             <PreviewSidebarItem
               key={note.title}
-              className={`rounded-xl px-2.5 py-2 text-[0.65rem] leading-4 ${
+              className={`rounded-xl px-2.5 py-2 text-[0.65rem] leading-4 transition duration-300 ease-[var(--ease-standard)] ${
                 index > 2 ? "hidden md:block" : ""
-              } text-white/44`}
+              } ${
+                state?.activePinned === note.title
+                  ? "bg-white/[0.06] text-white/82 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
+                  : "text-white/44"
+              }`}
             >
               {note.title}
             </PreviewSidebarItem>

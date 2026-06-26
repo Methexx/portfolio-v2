@@ -16,17 +16,18 @@ const iconMap = {
 } as const;
 
 type PreviewNavItemProps = {
+  active?: boolean;
   item: PreviewNavItemType;
 };
 
-export function PreviewNavItem({ item }: PreviewNavItemProps) {
+export function PreviewNavItem({ item, active = false }: PreviewNavItemProps) {
   const Icon = iconMap[item.icon];
 
   return (
     <div
       className={cn(
         "flex min-h-8 items-center gap-2.5 rounded-xl px-2.5 py-2 text-[0.7rem] font-medium tracking-[-0.01em]",
-        item.active
+        active || item.active
           ? "bg-primary/14 text-primary"
           : "text-white/62",
       )}

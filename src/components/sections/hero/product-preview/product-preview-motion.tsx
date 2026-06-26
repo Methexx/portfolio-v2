@@ -1,7 +1,11 @@
 "use client";
 
 import { motion, useReducedMotion, type Variants } from "motion/react";
-import type { ReactNode } from "react";
+import {
+  forwardRef,
+  type ComponentPropsWithoutRef,
+  type ReactNode,
+} from "react";
 
 import { cn } from "@/lib/cn";
 import { standardEase } from "@/lib/motion";
@@ -202,7 +206,7 @@ const previewVariants = {
 type MotionWrapperProps = {
   children: ReactNode;
   className?: string;
-};
+} & Omit<ComponentPropsWithoutRef<"div">, "children" | "className">;
 
 type PreviewDayAccentProps = {
   children: ReactNode;
@@ -210,39 +214,48 @@ type PreviewDayAccentProps = {
   className?: string;
 };
 
-function StaticOrMotion({
-  children,
-  className,
-  variants,
-}: MotionWrapperProps & { variants: Variants }) {
+const StaticOrMotion = forwardRef<
+  HTMLDivElement,
+  MotionWrapperProps & { variants: Variants }
+>(function StaticOrMotion({ children, className, variants, ...props }, ref) {
   const shouldReduceMotion = useReducedMotion();
 
   if (shouldReduceMotion) {
-    return <div className={className}>{children}</div>;
+    return (
+      <div ref={ref} className={className} {...props}>
+        {children}
+      </div>
+    );
   }
 
   return (
     <motion.div
+      ref={ref}
       className={className}
       initial="hidden"
       animate="visible"
       variants={variants}
+      {...props}
     >
       {children}
     </motion.div>
   );
-}
+});
 
-export function PreviewWindowEntrance({
-  children,
-  className,
-}: MotionWrapperProps) {
-  return (
-    <StaticOrMotion className={className} variants={previewVariants.window}>
-      {children}
-    </StaticOrMotion>
-  );
-}
+export const PreviewWindowEntrance = forwardRef<HTMLDivElement, MotionWrapperProps>(
+  function PreviewWindowEntrance({ children, className, ...props }, ref) {
+    return (
+      <StaticOrMotion
+        ref={ref}
+        className={className}
+        variants={previewVariants.window}
+        {...props}
+      >
+        {children}
+      </StaticOrMotion>
+    );
+  },
+);
 
 export function PreviewSidebarEntrance({
   children,
