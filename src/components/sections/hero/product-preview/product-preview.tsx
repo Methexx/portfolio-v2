@@ -102,7 +102,8 @@ export function ProductPreview() {
     : previewWorkspaceStates[activeStateIndex];
 
   return (
-    <PreviewShell ref={previewRef} aria-hidden="true">
+    <div ref={previewRef}>
+      <PreviewShell aria-hidden="true">
       <ProductPreviewActivity
         active={canAnimate}
         confirmVisible={phase === "confirm" || phase === "rest"}
@@ -131,6 +132,7 @@ export function ProductPreview() {
           <PreviewInspector state={activeState} />
         </PreviewInspectorEntrance>
       </div>
-    </PreviewShell>
+      </PreviewShell>
+    </div>
   );
 }

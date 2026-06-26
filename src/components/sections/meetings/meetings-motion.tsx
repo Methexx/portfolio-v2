@@ -197,7 +197,11 @@ export function MeetingsMotion() {
   const reducedMotionPreference = useReducedMotion();
   const shouldReduceMotion = Boolean(reducedMotionPreference);
   const sectionRef = useRef<HTMLDivElement | null>(null);
-  const isInView = useInView(sectionRef, sectionReveal);
+  const hasEntered = useInView(sectionRef, sectionReveal);
+  const isLoopInView = useInView(sectionRef, {
+    amount: 0.16,
+    margin: "0px 0px -10% 0px",
+  });
   const [isMobile, setIsMobile] = useState(false);
   const [allowHover, setAllowHover] = useState(false);
   const [activeMeetingIndex, setActiveMeetingIndex] = useState(2);
@@ -226,9 +230,9 @@ export function MeetingsMotion() {
   }, []);
 
   const timing = isMobile ? mobileTiming : desktopTiming;
-  const isActive = shouldReduceMotion || isInView;
+  const isActive = shouldReduceMotion || hasEntered;
   const { canAnimate } = useAnimationActivity({
-    inView: isInView,
+    inView: isLoopInView,
     reducedMotion: shouldReduceMotion,
   });
   const canHover = allowHover && !shouldReduceMotion;

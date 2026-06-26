@@ -112,6 +112,10 @@ export function ResearchReadingMotion() {
   const shouldReduceMotion = Boolean(reducedMotionPreference);
   const sectionRef = useRef<HTMLDivElement | null>(null);
   const hasEntered = useInView(sectionRef, sectionReveal);
+  const isLoopInView = useInView(sectionRef, {
+    amount: 0.16,
+    margin: "0px 0px -10% 0px",
+  });
   const [isMobile, setIsMobile] = useState(false);
   const [allowHover, setAllowHover] = useState(false);
   const [activeSourceIndex, setActiveSourceIndex] = useState(0);
@@ -162,7 +166,7 @@ export function ResearchReadingMotion() {
   const visibleTags = ["architecture", "research", "highlights"] as const;
   const isActive = shouldReduceMotion || hasEntered;
   const { canAnimate } = useAnimationActivity({
-    inView: hasEntered,
+    inView: isLoopInView,
     reducedMotion: shouldReduceMotion,
   });
 

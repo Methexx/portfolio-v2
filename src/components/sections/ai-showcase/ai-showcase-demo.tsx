@@ -92,12 +92,15 @@ function joinResponseChunks(visibleChunkCount: number) {
 export function AiShowcaseDemo() {
   const shouldReduceMotion = useReducedMotion();
   const sectionRef = useRef<HTMLDivElement | null>(null);
-  const isInView = useInView(sectionRef, {
+  const hasEntered = useInView(sectionRef, {
     amount: 0.25,
     once: true,
   });
+  const isLoopInView = useInView(sectionRef, {
+    amount: 0.2,
+  });
   const { canAnimate } = useAnimationActivity({
-    inView: isInView,
+    inView: isLoopInView,
     reducedMotion: Boolean(shouldReduceMotion),
   });
 
@@ -115,7 +118,7 @@ export function AiShowcaseDemo() {
   const hasRevealedCapabilitiesRef = useRef(hasRevealedCapabilities);
   const hasAutoStartedRef = useRef(false);
 
-  const hasEntered = shouldReduceMotion || isInView;
+  const hasEnteredView = shouldReduceMotion || hasEntered;
 
   useEffect(() => {
     hasRevealedCapabilitiesRef.current = hasRevealedCapabilities;
@@ -209,7 +212,7 @@ export function AiShowcaseDemo() {
   }, [clearScheduled, schedule, shouldReduceMotion]);
 
   useEffect(() => {
-    if (shouldReduceMotion || !hasEntered || hasAutoStartedRef.current) {
+    if (shouldReduceMotion || !hasEnteredView || hasAutoStartedRef.current) {
       return;
     }
 
@@ -217,7 +220,7 @@ export function AiShowcaseDemo() {
     schedule(() => {
       startDemo("full");
     }, demoTimings.autoStartDelayMs);
-  }, [hasEntered, schedule, shouldReduceMotion, startDemo]);
+  }, [hasEnteredView, schedule, shouldReduceMotion, startDemo]);
 
   useEffect(() => {
     if (shouldReduceMotion || !canAnimate || phase !== "resting") {
@@ -308,7 +311,7 @@ export function AiShowcaseDemo() {
           ) : (
             <motion.div
               initial="hidden"
-              animate={hasEntered ? "visible" : "hidden"}
+              animate={hasEnteredView ? "visible" : "hidden"}
               variants={sectionReveal}
               className="inline-flex items-center gap-2 text-[0.82rem] font-semibold uppercase tracking-[0.22em] text-primary"
             >
@@ -333,7 +336,7 @@ export function AiShowcaseDemo() {
                   <motion.span
                     className="block"
                     initial={{ opacity: 0.2, y: "108%" }}
-                    animate={hasEntered ? { opacity: 1, y: "0%" } : { opacity: 0.2, y: "108%" }}
+                    animate={hasEnteredView ? { opacity: 1, y: "0%" } : { opacity: 0.2, y: "108%" }}
                     transition={{
                       delay: 0.12 + index * 0.09,
                       duration: 0.88,
@@ -356,7 +359,7 @@ export function AiShowcaseDemo() {
             <motion.p
               className="mt-6 max-w-[42rem] text-[1.05rem] leading-8 text-muted sm:text-[1.125rem]"
               initial={{ opacity: 0, y: 14 }}
-              animate={hasEntered ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+              animate={hasEnteredView ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
               transition={{ delay: 0.42, duration: 0.58, ease: gentleEase }}
             >
               {aiShowcaseCopy.description}
@@ -419,7 +422,7 @@ export function AiShowcaseDemo() {
         <motion.div
           className="mt-12 sm:mt-14 lg:mt-16"
           initial="hidden"
-          animate={hasEntered ? "visible" : "hidden"}
+          animate={hasEnteredView ? "visible" : "hidden"}
           variants={panelReveal}
         >
           <AiDemoPanel
@@ -428,7 +431,7 @@ export function AiShowcaseDemo() {
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <motion.div
                     initial={{ opacity: 0, y: 16 }}
-                    animate={hasEntered ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+                    animate={hasEnteredView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
                     transition={{ delay: 0.9, duration: 0.52, ease: gentleEase }}
                   >
                     <p className="text-[0.8rem] font-semibold uppercase tracking-[0.18em] text-ai-panel-accent">
@@ -443,7 +446,7 @@ export function AiShowcaseDemo() {
                     onClick={handleRunDemo}
                     disabled={isRunning}
                     initial={{ opacity: 0, y: 12 }}
-                    animate={hasEntered ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+                    animate={hasEnteredView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
                     transition={{ delay: 1.02, duration: 0.52, ease: gentleEase }}
                     className={cn(
                       "inline-flex min-h-10 items-center justify-center rounded-full border px-4 py-2 text-sm font-medium transition duration-200 ease-[var(--ease-standard)] focus-visible:outline-none",
@@ -458,7 +461,7 @@ export function AiShowcaseDemo() {
                 <motion.div
                   className="mt-4 space-y-2 text-[0.98rem] leading-7 text-ai-panel-muted"
                   initial={{ opacity: 0, y: 16 }}
-                  animate={hasEntered ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+                  animate={hasEnteredView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
                   transition={{ delay: 1.04, duration: 0.56, ease: gentleEase }}
                 >
                   {aiShowcaseCopy.promptSupportingLines.map((line) => (

@@ -19,9 +19,10 @@ const desktopPlacements = [
 export function IntegrationsShowcase() {
   const shouldReduceMotion = useReducedMotion();
   const showcaseRef = useRef<HTMLDivElement | null>(null);
-  const isInView = useInView(showcaseRef, { amount: 0.22, once: true });
+  const hasEntered = useInView(showcaseRef, { amount: 0.22, once: true });
+  const isLoopInView = useInView(showcaseRef, { amount: 0.16 });
   const { canAnimate } = useAnimationActivity({
-    inView: isInView,
+    inView: isLoopInView,
     reducedMotion: Boolean(shouldReduceMotion),
   });
   const [activeIndex, setActiveIndex] = useState(0);
@@ -68,14 +69,17 @@ export function IntegrationsShowcase() {
     <motion.div
       ref={showcaseRef}
       initial={shouldReduceMotion ? false : { opacity: 0, y: 48, scale: 0.988 }}
-      whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, amount: 0.24 }}
+      animate={
+        shouldReduceMotion || hasEntered
+          ? { opacity: 1, y: 0, scale: 1 }
+          : { opacity: 0, y: 48, scale: 0.988 }
+      }
       transition={{ duration: 0.96, ease: [0.22, 1, 0.36, 1] }}
       className="relative mt-14 overflow-hidden rounded-[2.5rem] border border-integrations-border bg-[radial-gradient(circle_at_top,rgba(109,61,245,0.14),transparent_32%),linear-gradient(180deg,rgba(250,247,252,0.94),rgba(241,237,247,0.98))] p-4 shadow-[0_26px_72px_-48px_rgba(36,21,47,0.18),inset_0_1px_0_rgba(255,255,255,0.82)] sm:mt-16 sm:p-6"
       aria-labelledby="integrations-showcase-title"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(109,61,245,0.08)_1px,transparent_1px)] bg-[size:1.65rem_1.65rem] opacity-22 sm:opacity-28" />
-      <IntegrationFlow />
+      <IntegrationFlow activeIndex={activeIndex} canAnimate={canAnimate} isMobile={isMobile} />
       {!isMobile ? (
         <motion.div
           aria-hidden="true"
